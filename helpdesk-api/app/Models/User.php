@@ -15,7 +15,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // 'cliente' ou 'tecnico'
+        'role',
+        'position',
+        'department',
+        'avatar_path',
     ];
 
     protected $hidden = [
@@ -31,13 +34,11 @@ class User extends Authenticatable
         ];
     }
 
-    // Um usuário pode ter vários chamados criados por ele
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'user_id');
     }
 
-    // Um técnico pode ter vários chamados atribuídos a ele
     public function assignedTickets()
     {
         return $this->hasMany(Ticket::class, 'technician_id');

@@ -11,12 +11,11 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
+            $table->enum('category', ['hardware', 'login', 'db_infra', 'financeiro'])->default('hardware');
             $table->enum('status', ['pendente', 'em_andamento', 'concluido'])->default('pendente');
             $table->enum('priority', ['baixa', 'media', 'alta'])->default('media');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Quem abriu
-            $table->foreignId('technician_id')->nullable()->constrained('users')->nullOnDelete(); // Técnico atribuído
-            $table->text('response_notes')->nullable(); // Resposta do técnico
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('technician_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

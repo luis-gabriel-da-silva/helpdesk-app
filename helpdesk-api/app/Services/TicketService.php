@@ -25,31 +25,29 @@ class TicketService extends BaseService
 
     public function createTicket(User $user, array $data)
     {
-        $data['user_id'] = $user->id;
-        $data['status'] = 'pendente';
-        $data['priority'] = $data['priority'] ?? 'media';
+        $ticket = $this->create([
+            'title' => $data['title'],
+            'category' => $data['category'],
+            'priority' => $data['priority'] ?? 'media',
+            'status' => 'pendente',
+            'user_id' => $user->id,
+        ]);
 
-        return $this->create($data);
-    }
-
-    public function updateTicket(User $user, int $ticketId, array $data)
-    {
-        $ticket = $this->getById($ticketId);
-
-        if ($user->role === 'tecnico') {
-            $data['technician_id'] = $user->id;
-            return $this->update($ticketId, $data);
+        $attachmentPath = null;
+        if (isset($data['attachment']) && $data['attachment']->isValid()) {
+            $attachmentPath = $data['attachment']->store('attachments', 'public');
         }
 
-        // Regra do cliente: só atualiza se for o dono do chamado
-        if ($ticket->user_id !== $user->id) {
-            throw new \Exception('Não autorizado', 403);
-        }
+        $ticket->messages()->create([
+            'user_id' => $user->id,
+            'message' => $data['description'],
+            'attachment_path' => $attachmentPath,
+        ]);
 
-        return $this->update($ticketId, $data);
+        return $ticket;
     }
 
-    public function deleteTicket(User $user, int $ticketId)
+    public function addMessage(User $user, int $ticketId, array $data)
     {
         $ticket = $this->getById($ticketId);
 
@@ -57,6 +55,27 @@ class TicketService extends BaseService
             throw new \Exception('Não autorizado', 403);
         }
 
-        return $this->delete($ticketId);
+        $attachmentPath = null;
+        if (isset($data['attachment']) && $data['attachment']->isValid()) {
+            $attachmentPath = $data['attachment']->store('attachments', 'public');
+        }
+
+        return $ticket->messages()->create([
+            'user_id' => $user->id,
+            'message' => $data['message'],
+            'attachment_path' => $attachmentPath,
+        ]);
+    }
+
+    public function updateStatus(User $user, int $ticketId, string $status)
+    {
+        if ($user->role !== 'tecnico') {
+            throw new \Exception('Apenas técnicos podem alterar o status.', 403);
+        }
+
+        return $this->update($ticketId, [
+            'status' => $status,
+            'technician_id' => $user->id,
+        ]);
     }
 }

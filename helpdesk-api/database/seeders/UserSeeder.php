@@ -10,20 +10,22 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Criar Cliente
         User::create([
             'name' => 'João Cliente',
             'email' => 'cliente@helpdesk.com',
             'password' => Hash::make('123456'),
             'role' => 'cliente',
+            'position' => 'Assistente Financeiro',
+            'department' => 'Financeiro',
         ]);
 
-        // Criar Técnico
         User::create([
             'name' => 'Maria Técnica',
             'email' => 'tecnico@helpdesk.com',
             'password' => Hash::make('123456'),
             'role' => 'tecnico',
+            'position' => 'Analista de Suporte Sr.',
+            'department' => 'TI / Infraestrutura',
         ]);
     }
 }

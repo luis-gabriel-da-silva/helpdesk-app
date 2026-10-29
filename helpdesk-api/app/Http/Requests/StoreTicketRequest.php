@@ -15,8 +15,10 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'category' => 'required|in:hardware,login,db_infra,financeiro',
             'priority' => 'nullable|in:baixa,media,alta',
+            'description' => 'required|string',
+            'attachment' => 'nullable|file|image|max:5120',
         ];
     }
 }

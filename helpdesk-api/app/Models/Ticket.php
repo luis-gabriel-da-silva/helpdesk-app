@@ -11,23 +11,25 @@ class Ticket extends Model
 
     protected $fillable = [
         'title',
-        'description',
+        'category',
         'status',
         'priority',
         'user_id',
         'technician_id',
-        'response_notes',
     ];
 
-    // Relacionamento com o usuário que abriu o chamado
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relacionamento com o técnico responsável
     public function technician()
     {
         return $this->belongsTo(User::class, 'technician_id');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(TicketMessage::class)->oldest();
     }
 }

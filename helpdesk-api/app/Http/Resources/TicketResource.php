@@ -12,14 +12,14 @@ class TicketResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
+            'category' => $this->category,
             'status' => $this->status,
             'priority' => $this->priority,
-            'response_notes' => $this->response_notes,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
             'user' => new UserResource($this->whenLoaded('user')),
             'technician' => new UserResource($this->whenLoaded('technician')),
+            'messages' => TicketMessageResource::collection($this->whenLoaded('messages')),
         ];
     }
 }
