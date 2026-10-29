@@ -7,58 +7,99 @@ import '../models/user_model.dart';
 import 'api_config.dart';
 
 class AuthService {
-  final _storage = const FlutterSecureStorage();
-  static const _tokenKey = 'auth_token';
-  static const _userKey = 'auth_user';
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  // Fazer Login
+  static const String _tokenKey = 'auth_token';
+  static const String _userKey = 'user_data';
+
+  /// Guarda o token JWT/Sanctum de forma segura
+  Future<void> saveToken(String token) async {
+    await _storage.write(key: _tokenKey, value: token);
+  }
+
+  /// Recupera o token guardado
+  Future<String?> getToken() async {
+    return await _storage.read(key: _tokenKey);
+  }
+
+  /// Guarda os dados do utilizador localmente
+  Future<void> saveUser(UserModel user) async {
+    final userJson = jsonEncode(user.toJson());
+    await _storage.write(key: _userKey, value: userJson);
+  }
+
+  /// Recupera o utilizador guardado
+  Future<UserModel?> getSavedUser() async {
+    final userString = await _storage.read(key: _userKey);
+    if (userString == null) return null;
+    try {
+      final Map<String, dynamic> userMap = jsonDecode(userString);
+      return UserModel.fromJson(userMap);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Realiza o login na API do Laravel
   Future<UserModel> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('${ApiConfig.baseUrl}/login'),
+      Uri.parse(ApiConfig.loginUrl),
       headers: ApiConfig.headers(),
       body: jsonEncode({'email': email, 'password': password}),
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final token = data['token'] as String;
-      final user = UserModel.fromJson(data['user']);
+      final Map<String, dynamic> data = jsonDecode(response.body);
 
-      await _storage.write(key: _tokenKey, value: token);
-      await _storage.write(key: _userKey, value: jsonEncode(user.toJson()));
+      final token = data['token'] ?? data['access_token'];
+      final userData = data['user'] ?? data;
+
+      if (token != null) {
+        await saveToken(token.toString());
+      }
+
+      final user = UserModel.fromJson(userData as Map<String, dynamic>);
+      await saveUser(user);
 
       return user;
     } else {
-      final error = jsonDecode(response.body);
-      throw Exception(error['message'] ?? 'Falha ao realizar login.');
+      // Tenta ler o erro como JSON, senão devolve a mensagem textual limpa
+      try {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Falha ao realizar login.');
+      } catch (_) {
+        throw Exception(
+          'Erro no servidor Laravel (${response.statusCode}). Verifique os logs.',
+        );
+      }
     }
   }
 
-  // Obter Token Guardado
-  Future<String?> getToken() async {
-    return await _storage.read(key: _tokenKey);
-  }
-
-  // Obter Utilizador Guardado Localmente
-  Future<UserModel?> getSavedUser() async {
-    final userStr = await _storage.read(key: _userKey);
-    if (userStr != null) {
-      return UserModel.fromJson(jsonDecode(userStr));
-    }
-    return null;
-  }
-
-  // Fazer Logout
+  /// Termina a sessão e limpa os dados armazenados
   Future<void> logout() async {
     final token = await getToken();
+
     if (token != null) {
       try {
         await http.post(
-          Uri.parse('${ApiConfig.baseUrl}/logout'),
-          headers: ApiConfig.headers(token),
+          Uri.parse(ApiConfig.logoutUrl),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
         );
-      } catch (_) {}
+      } catch (_) {
+        // Continua a limpeza local mesmo se a chamada de rede falhar
+      }
     }
-    await _storage.deleteAll();
+
+    await _storage.delete(key: _tokenKey);
+    await _storage.delete(key: _userKey);
+  }
+
+  /// Verifica se existe uma sessão ativa
+  Future<bool> isAuthenticated() async {
+    final token = await getToken();
+    return token != null && token.isNotEmpty;
   }
 }
