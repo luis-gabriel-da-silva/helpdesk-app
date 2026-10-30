@@ -7,6 +7,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/utils/validators.dart';
 import '../../services/auth_service.dart';
+import '../../widgets/helpdesk_logo.dart';
 import '../../widgets/responsive_container.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -81,8 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         child: SafeArea(
-          child: Center(
-            child: ResponsiveContainer(
+          child: Stack(
+            children: [
+              Center(
+                child: ResponsiveContainer(
               maxWidth: 520, // Aumentado para Web
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -93,33 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Logo + Subtítulo principal
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: const TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'HELP!\n',
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.primary,
-                              height: 1.0,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'D E S K',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimary,
-                              letterSpacing: 7.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.lg),
+                    const HelpdeskLogo(scale: 2.8),
+                    const SizedBox(height: AppSpacing.md),
                     const Text(
                       AppStrings.appSlogan,
                       textAlign: TextAlign.center,
@@ -136,11 +115,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(28),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.14),
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.08),
-                            blurRadius: 30,
-                            offset: const Offset(0, 12),
+                            color: AppColors.primary.withOpacity(0.16),
+                            blurRadius: 32,
+                            offset: const Offset(0, 14),
                           ),
                         ],
                       ),
@@ -429,6 +411,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+              ),
+            ],
           ),
         ),
       ),

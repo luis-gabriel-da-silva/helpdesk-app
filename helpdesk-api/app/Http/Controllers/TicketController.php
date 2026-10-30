@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Resources\TicketMessageResource;
 use App\Http\Resources\TicketResource;
 use App\Services\TicketService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -33,6 +34,12 @@ class TicketController extends Controller
     public function show(Request $request, int $id)
     {
         $ticket = $this->ticketService->getById($id, ['user', 'technician', 'messages.user']);
+
+        if ($request->user()->role === 'tecnico' && $ticket->technician_seen_at === null) {
+            $ticket->forceFill(['technician_seen_at' => now()])->save();
+            $ticket->refresh();
+        }
+
         return new TicketResource($ticket);
     }
 
@@ -55,6 +62,22 @@ class TicketController extends Controller
             return new TicketResource($ticket->load(['user', 'technician', 'messages.user']));
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 400);
+        }
+    }
+
+    public function destroy(Request $request, int $id)
+    {
+        try {
+            $this->ticketService->deleteTicket($request->user(), $id);
+
+            return response()->noContent();
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Chamado nao encontrado.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(
+                ['message' => $e->getMessage()],
+                $e->getCode() ?: 400,
+            );
         }
     }
 }

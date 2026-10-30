@@ -15,7 +15,7 @@ class StoreMessageRequest extends FormRequest
     {
         return [
             'message' => 'required|string',
-            'attachment' => 'nullable|file|image|max:5120',
+            'attachment' => 'nullable|file|extensions:jpg,jpeg,png,webp,log|max:15360',
         ];
     }
 }

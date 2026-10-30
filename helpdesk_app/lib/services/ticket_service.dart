@@ -43,6 +43,25 @@ class TicketService {
     }
   }
 
+  Future<void> deleteTicket(int ticketId) async {
+    final token = await _authService.getToken();
+    final response = await http.delete(
+      Uri.parse('${ApiConfig.baseUrl}/tickets/$ticketId'),
+      headers: ApiConfig.headers(token),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    var message = 'Erro ao apagar o chamado.';
+    try {
+      final error = jsonDecode(response.body);
+      if (error is Map<String, dynamic> && error['message'] is String) {
+        message = error['message'] as String;
+      }
+    } catch (_) {}
+    throw Exception(message);
+  }
+
   // Criar Novo Chamado (Suporte Híbrido a Anexo: Bytes para Web, FilePath para Mobile)
   Future<TicketModel> createTicket({
     required String title,
@@ -91,7 +110,7 @@ class TicketService {
       final data = jsonDecode(response.body)['data'];
       return TicketModel.fromJson(data);
     } else {
-      throw Exception('Erro ao criar chamado.');
+      throw Exception(_responseError(response, 'Erro ao criar chamado.'));
     }
   }
 
@@ -139,6 +158,23 @@ class TicketService {
     } else {
       throw Exception('Erro ao enviar mensagem.');
     }
+  }
+
+  String _responseError(http.Response response, String fallback) {
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map<String, dynamic>) {
+        final message = decoded['message'];
+        if (message is String && message.isNotEmpty) return message;
+        final errors = decoded['errors'];
+        if (errors is Map<String, dynamic>) {
+          for (final value in errors.values) {
+            if (value is List && value.isNotEmpty) return value.first.toString();
+          }
+        }
+      }
+    } catch (_) {}
+    return fallback;
   }
 
   // Atualizar Status do Chamado

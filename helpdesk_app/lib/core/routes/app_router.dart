@@ -30,8 +30,7 @@ abstract class AppRouter {
         path: AppRoutes.ticketDetailPath,
         name: AppRoutes.ticketDetail,
         builder: (context, state) {
-          final idStr = state.pathParameters['id'] ?? '0';
-          final id = int.tryParse(idStr) ?? 0;
+          final id = state.pathParameters['id'] ?? '0';
           return TicketDetailScreen(ticketId: id);
         },
       ),

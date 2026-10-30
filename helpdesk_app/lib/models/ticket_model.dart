@@ -12,6 +12,7 @@ class TicketModel {
   final UserModel? user;
   final UserModel? technician;
   final List<TicketMessageModel> messages;
+  final bool isNewForTechnician;
 
   TicketModel({
     required this.id,
@@ -24,6 +25,7 @@ class TicketModel {
     this.user,
     this.technician,
     this.messages = const [],
+    this.isNewForTechnician = false,
   });
 
   factory TicketModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class TicketModel {
       category: json['category'] as String,
       status: json['status'] as String,
       priority: json['priority'] as String,
+      isNewForTechnician: json['is_new_for_technician'] == true,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
       user: json['user'] != null ? UserModel.fromJson(json['user']) : null,

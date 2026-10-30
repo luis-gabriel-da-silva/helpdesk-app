@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,6 +40,56 @@ class AuthService {
     } catch (_) {
       return null;
     }
+  }
+
+  String resolveAvatarUrl(String url) => ApiConfig.resolveMediaUrl(url);
+
+  Future<UserModel> updateProfile(
+    UserModel user, {
+    Uint8List? avatarBytes,
+    String? avatarPath,
+    String? avatarName,
+  }) async {
+    final token = await getToken();
+    final request = http.MultipartRequest('POST', Uri.parse(ApiConfig.profileUrl));
+    request.headers.addAll({
+      'Accept': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    });
+    request.fields.addAll({
+      'name': user.name,
+      'email': user.email,
+      'position': user.position,
+      'department': user.department,
+    });
+    if (avatarBytes != null && kIsWeb) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'avatar',
+        avatarBytes,
+        filename: avatarName ?? 'profile.png',
+      ));
+    } else if (avatarPath != null) {
+      request.files.add(await http.MultipartFile.fromPath('avatar', avatarPath));
+    }
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+
+    if (response.statusCode != 200) {
+      var message = 'Erro ao atualizar o perfil (${response.statusCode}).';
+      try {
+        final error = jsonDecode(response.body);
+        if (error is Map<String, dynamic> && error['message'] is String) {
+          message = error['message'] as String;
+        }
+      } catch (_) {}
+      throw Exception(message);
+    }
+
+    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    final userData = decoded['data'] ?? decoded;
+    final updatedUser = UserModel.fromJson(userData as Map<String, dynamic>);
+    await saveUser(updatedUser);
+    return updatedUser;
   }
 
   /// Realiza o login na API do Laravel

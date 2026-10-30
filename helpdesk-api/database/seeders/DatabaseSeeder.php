@@ -33,5 +33,49 @@ class DatabaseSeeder extends Seeder
                 'department' => 'Recursos Humanos',
             ]
         );
+
+        User::updateOrCreate(
+            ['email' => 'tecnico2@empresa.com'],
+            [
+                'name' => 'Carlos Oliveira',
+                'password' => Hash::make('123456'),
+                'role' => 'tecnico',
+                'position' => 'Analista de Suporte',
+                'department' => 'Tecnologia',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'tecnico3@empresa.com'],
+            [
+                'name' => 'Beatriz Lima',
+                'password' => Hash::make('123456'),
+                'role' => 'tecnico',
+                'position' => 'Analista de Infraestrutura',
+                'department' => 'Infraestrutura',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'usuario2@empresa.com'],
+            [
+                'name' => 'Lucas Santos',
+                'password' => Hash::make('123456'),
+                'role' => 'cliente',
+                'position' => 'Assistente Administrativo',
+                'department' => 'Financeiro',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'usuario3@empresa.com'],
+            [
+                'name' => 'Mariana Costa',
+                'password' => Hash::make('123456'),
+                'role' => 'cliente',
+                'position' => 'Analista de Operações',
+                'department' => 'Operações',
+            ]
+        );
     }
 }

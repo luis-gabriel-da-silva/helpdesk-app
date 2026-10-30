@@ -15,6 +15,7 @@ class TicketResource extends JsonResource
             'category' => $this->category,
             'status' => $this->status,
             'priority' => $this->priority,
+            'is_new_for_technician' => $this->technician_seen_at === null,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
             'user' => new UserResource($this->whenLoaded('user')),

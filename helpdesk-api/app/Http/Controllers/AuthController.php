@@ -35,6 +35,7 @@ class AuthController extends Controller
                 'role' => $user->role ?? 'cliente',
                 'position' => $user->position ?? 'Não especificado',
                 'department' => $user->department ?? 'Geral',
+                'avatar_url' => $user->avatar_path ? url('/api/attachments/'.$user->avatar_path) : null,
             ]
         ]);
     }

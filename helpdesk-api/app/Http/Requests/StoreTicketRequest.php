@@ -18,7 +18,7 @@ class StoreTicketRequest extends FormRequest
             'category' => 'required|in:hardware,login,db_infra,financeiro',
             'priority' => 'nullable|in:baixa,media,alta',
             'description' => 'required|string',
-            'attachment' => 'nullable|file|image|max:5120',
+            'attachment' => 'nullable|file|extensions:jpg,jpeg,png,webp,log|max:15360',
         ];
     }
 }

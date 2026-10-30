@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\UserNotification;
 use App\Repositories\Contracts\TicketRepositoryInterface;
+use Illuminate\Support\Facades\Storage;
 
 class TicketService extends BaseService
 {
@@ -44,6 +46,16 @@ class TicketService extends BaseService
             'attachment_path' => $attachmentPath,
         ]);
 
+        User::where('role', 'tecnico')->where('id', '!=', $user->id)->get()->each(function (User $technician) use ($ticket) {
+            UserNotification::create([
+                'user_id' => $technician->id,
+                'ticket_id' => $ticket->id,
+                'type' => 'new_ticket',
+                'title' => 'Novo chamado',
+                'body' => 'Aberto por '.$user->name,
+            ]);
+        });
+
         return $ticket;
     }
 
@@ -60,11 +72,32 @@ class TicketService extends BaseService
             $attachmentPath = $data['attachment']->store('attachments', 'public');
         }
 
-        return $ticket->messages()->create([
+        $createdMessage = $ticket->messages()->create([
             'user_id' => $user->id,
             'message' => $data['message'],
             'attachment_path' => $attachmentPath,
         ]);
+
+        if ($user->role === 'tecnico') {
+            $recipients = collect([$ticket->user]);
+        } elseif ($ticket->technician_id) {
+            $recipients = collect([$ticket->technician]);
+        } else {
+            $recipients = User::where('role', 'tecnico')->get();
+        }
+
+        $recipients->filter()->unique('id')->reject(fn (User $recipient) => $recipient->id === $user->id)
+            ->each(function (User $recipient) use ($ticket, $user) {
+                UserNotification::create([
+                    'user_id' => $recipient->id,
+                    'ticket_id' => $ticket->id,
+                    'type' => 'new_message',
+                    'title' => 'Nova mensagem no chamado',
+                    'body' => $ticket->title.' · '.$user->name,
+                ]);
+            });
+
+        return $createdMessage;
     }
 
     public function updateStatus(User $user, int $ticketId, string $status)
@@ -77,5 +110,26 @@ class TicketService extends BaseService
             'status' => $status,
             'technician_id' => $user->id,
         ]);
+    }
+
+    public function deleteTicket(User $user, int $ticketId): void
+    {
+        $ticket = $this->getById($ticketId, ['messages']);
+
+        if ($user->role !== 'tecnico' && $ticket->user_id !== $user->id) {
+            throw new \Exception('Sem permissao para apagar este chamado.', 403);
+        }
+
+        $attachmentPaths = $ticket->messages
+            ->pluck('attachment_path')
+            ->filter()
+            ->values()
+            ->all();
+
+        $this->delete($ticketId);
+
+        if ($attachmentPaths !== []) {
+            Storage::disk('public')->delete($attachmentPaths);
+        }
     }
 }
