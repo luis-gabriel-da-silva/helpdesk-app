@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketMessageResource;
 use App\Http\Resources\TicketResource;
 use App\Services\TicketService;
@@ -41,6 +42,23 @@ class TicketController extends Controller
         }
 
         return new TicketResource($ticket);
+    }
+
+    public function update(UpdateTicketRequest $request, int $id)
+    {
+        try {
+            $ticket = $this->ticketService->updateTicket(
+                $request->user(),
+                $id,
+                $request->validated(),
+            );
+
+            return new TicketResource($ticket->load(['user', 'technician', 'messages.user']));
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Chamado não encontrado.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 400);
+        }
     }
 
     public function addMessage(StoreMessageRequest $request, int $id)

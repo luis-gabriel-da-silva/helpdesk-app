@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -26,7 +27,9 @@ class ProfileHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initial = name.trim().isEmpty ? 'U' : name.trim()[0].toUpperCase();
+    final initial = name.trim().isEmpty
+        ? AppStrings.userInitial
+        : name.trim()[0].toUpperCase();
 
     return _ProfileCard(
       child: Column(
@@ -35,18 +38,20 @@ class ProfileHeaderCard extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               CircleAvatar(
-                radius: 48,
-                backgroundColor: AppColors.primary.withOpacity(0.14),
+                radius: AppSpacing.avatarRadiusLarge,
+                backgroundColor: AppColors.primary.withValues(
+                  alpha: AppColors.opacity14,
+                ),
                 backgroundImage: photoBytes == null
                     ? (photoUrl == null ? null : NetworkImage(photoUrl!))
                     : MemoryImage(photoBytes!),
                 child: photoBytes == null && photoUrl == null
                     ? Text(
                         initial,
-                        style: const TextStyle(
+                        style: AppTextStyles.custom(
                           color: AppColors.primary,
-                          fontSize: 34,
-                          fontWeight: FontWeight.bold,
+                          fontSize: AppTextStyles.fontSize34,
+                          fontWeight: AppTextStyles.bold,
                         ),
                       )
                     : null,
@@ -58,12 +63,12 @@ class ProfileHeaderCard extends StatelessWidget {
                   color: AppColors.primary,
                   shape: const CircleBorder(),
                   child: IconButton(
-                    tooltip: 'Alterar foto',
+                    tooltip: AppStrings.changePhoto,
                     onPressed: onChangePhoto,
                     icon: const Icon(
                       Icons.camera_alt,
-                      color: Colors.white,
-                      size: 18,
+                      color: AppColors.surface,
+                      size: AppSpacing.space18,
                     ),
                   ),
                 ),
@@ -81,8 +86,12 @@ class ProfileHeaderCard extends StatelessWidget {
                   style: AppTextStyles.titleLarge,
                 ),
               ),
-              const SizedBox(width: 6),
-              const Icon(Icons.verified, color: AppColors.primary, size: 19),
+              const SizedBox(width: AppSpacing.space6),
+              const Icon(
+                Icons.verified,
+                color: AppColors.primary,
+                size: AppSpacing.space19,
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -95,7 +104,7 @@ class ProfileHeaderCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           const Text(
-            'JPG, PNG ou WebP até 5MB',
+            AppStrings.profileImageFormats,
             style: AppTextStyles.bodySmall,
           ),
         ],
@@ -116,13 +125,15 @@ class _ProfileCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.14),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity14),
+            blurRadius: AppSpacing.space20,
+            offset: const Offset(AppSpacing.zero, AppSpacing.space6),
           ),
         ],
       ),

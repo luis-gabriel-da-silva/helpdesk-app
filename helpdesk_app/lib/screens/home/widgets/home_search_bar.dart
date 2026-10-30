@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
+import 'package:helpdesk_app/core/theme/app_spacing.dart';
 
 class HomeSearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -18,14 +22,16 @@ class HomeSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.14)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppColors.opacity14),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(AppSpacing.zero, AppSpacing.xs),
           ),
         ],
       ),
@@ -34,15 +40,19 @@ class HomeSearchBar extends StatelessWidget {
         onChanged: onChanged,
         decoration: InputDecoration(
           hintText: isTecnico
-              ? 'Buscar por título ou ID...'
-              : 'Buscar por ID, assunto ou palavra-chave...',
-          hintStyle: TextStyle(
-            fontSize: 13,
-            color: AppColors.textSecondary.withOpacity(0.7),
+              ? AppStrings.technicianSearch
+              : AppStrings.customerSearch,
+          hintStyle: AppTextStyles.custom(
+            fontSize: AppTextStyles.fontSize13,
+            color: AppColors.textSecondary.withValues(
+              alpha: AppColors.opacity70,
+            ),
           ),
           prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.space14,
+          ),
         ),
       ),
     );

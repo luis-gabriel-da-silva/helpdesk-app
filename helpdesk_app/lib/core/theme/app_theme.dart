@@ -5,6 +5,28 @@ import 'app_spacing.dart';
 import 'app_text_styles.dart';
 
 abstract class AppTheme {
+  static const RadialGradient cloudyBackgroundGradient = RadialGradient(
+    center: Alignment(0.0, -0.4),
+    radius: 1.4,
+    colors: [
+      AppColors.surface,
+      AppColors.backgroundGradientMid,
+      AppColors.backgroundGradientEnd,
+    ],
+    stops: [0.2, 0.65, 1.0],
+  );
+
+  static const RadialGradient loginBackgroundGradient = RadialGradient(
+    center: Alignment(0.0, -0.2),
+    radius: 1.3,
+    colors: [
+      AppColors.surface,
+      AppColors.loginGradientMid,
+      AppColors.loginGradientEnd,
+    ],
+    stops: [0.2, 0.65, 1.0],
+  );
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -16,7 +38,7 @@ abstract class AppTheme {
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.background,
-        elevation: 0,
+        elevation: AppSpacing.zero,
         centerTitle: true,
         iconTheme: IconThemeData(color: AppColors.textPrimary),
         titleTextStyle: AppTextStyles.titleMedium,
@@ -30,15 +52,18 @@ abstract class AppTheme {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: const BorderSide(
+            color: AppColors.primary,
+            width: AppSpacing.focusedBorderWidth,
+          ),
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textLight,
@@ -47,8 +72,8 @@ abstract class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(52),
+          foregroundColor: AppColors.surface,
+          minimumSize: const Size.fromHeight(AppSpacing.space52),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
@@ -57,8 +82,8 @@ abstract class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: AppColors.surface,
-        elevation: 1,
-        shadowColor: AppColors.primary.withOpacity(0.08),
+        elevation: AppSpacing.hairline,
+        shadowColor: AppColors.primary.withValues(alpha: AppColors.opacity08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         ),

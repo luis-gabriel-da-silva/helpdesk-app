@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/constants/app_strings.dart';
 
 class CorporateInfoCard extends StatelessWidget {
   final TextEditingController nameController;
@@ -22,18 +23,9 @@ class CorporateInfoCard extends StatelessWidget {
     required this.onDepartmentChanged,
   });
 
-  static const _departments = [
-    'Tecnologia',
-    'Infraestrutura',
-    'Financeiro',
-    'Recursos Humanos',
-    'Operações',
-    'Geral',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final options = {..._departments, department}.toList()..sort();
+    final options = {...AppStrings.departments, department}.toList()..sort();
 
     return Container(
       width: double.infinity,
@@ -42,12 +34,12 @@ class CorporateInfoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Dados Corporativos', style: AppTextStyles.titleSmall),
+          Text(AppStrings.corporateData, style: AppTextStyles.titleSmall),
           const SizedBox(height: AppSpacing.md),
-          _field('Nome Completo', nameController),
+          _field(AppStrings.fullName, nameController),
           const SizedBox(height: AppSpacing.sm),
           _field(
-            'E-mail Corporativo',
+            AppStrings.corporateEmail,
             emailController,
             keyboardType: TextInputType.emailAddress,
           ),
@@ -55,20 +47,22 @@ class CorporateInfoCard extends StatelessWidget {
           DropdownButtonFormField<String>(
             initialValue: department,
             decoration: const InputDecoration(
-              labelText: 'Setor / Departamento',
+              labelText: AppStrings.departmentFullLabel,
               prefixIcon: Icon(Icons.business_outlined),
             ),
             items: options
-                .map((value) => DropdownMenuItem(value: value, child: Text(value)))
+                .map(
+                  (value) => DropdownMenuItem(value: value, child: Text(value)),
+                )
                 .toList(),
             onChanged: onDepartmentChanged,
           ),
           const SizedBox(height: AppSpacing.sm),
-          _field('Cargo', positionController),
+          _field(AppStrings.positionLabel, positionController),
           const SizedBox(height: AppSpacing.sm),
           InputDecorator(
             decoration: const InputDecoration(
-              labelText: 'Matrícula',
+              labelText: AppStrings.employeeId,
               prefixIcon: Icon(Icons.badge_outlined),
             ),
             child: Text(employeeCode),
@@ -87,19 +81,24 @@ class CorporateInfoCard extends StatelessWidget {
     keyboardType: keyboardType,
     decoration: InputDecoration(
       labelText: label,
-      prefixIcon: const Icon(Icons.edit_outlined, color: AppColors.textSecondary),
+      prefixIcon: const Icon(
+        Icons.edit_outlined,
+        color: AppColors.textSecondary,
+      ),
     ),
   );
 
   static final _cardDecoration = BoxDecoration(
     color: AppColors.surface,
-    borderRadius: BorderRadius.circular(20),
-    border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+    borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+    border: Border.all(
+      color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+    ),
     boxShadow: [
       BoxShadow(
-        color: AppColors.primary.withOpacity(0.14),
-        blurRadius: 20,
-        offset: const Offset(0, 6),
+        color: AppColors.primary.withValues(alpha: AppColors.opacity14),
+        blurRadius: AppSpacing.space20,
+        offset: const Offset(AppSpacing.zero, AppSpacing.space6),
       ),
     ],
   );

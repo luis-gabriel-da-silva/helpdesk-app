@@ -5,10 +5,13 @@ import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/helpdesk_logo.dart';
 import '../../widgets/responsive_container.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -53,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: AppColors.danger,
           ),
         );
       }
@@ -70,347 +73,370 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         // Fundo com gradiente suave (Efeito nublado/iluminado roxo e branco)
         decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment(0.0, -0.2),
-            radius: 1.3,
-            colors: [
-              Color(0xFFFFFFFF), // Centro iluminado em branco
-              Color(0xFFF3EEFB), // Lavanda suave
-              Color(0xFFE8DEF8), // Roxo tom nublado
-            ],
-            stops: [0.2, 0.65, 1.0],
-          ),
+          gradient: AppTheme.loginBackgroundGradient,
         ),
         child: SafeArea(
           child: Stack(
             children: [
               Center(
                 child: ResponsiveContainer(
-              maxWidth: 520, // Aumentado para Web
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.xl,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Logo + Subtítulo principal
-                    const SizedBox(height: AppSpacing.lg),
-                    const HelpdeskLogo(scale: 2.8),
-                    const SizedBox(height: AppSpacing.md),
-                    const Text(
-                      AppStrings.appSlogan,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: AppColors.textSecondary,
-                      ),
+                  maxWidth: AppSpacing.maxWidthLogin,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.xl,
                     ),
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // Card Principal de Login
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.xxl),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(28),
-                        border: Border.all(
-                          color: AppColors.primary.withOpacity(0.14),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.16),
-                            blurRadius: 32,
-                            offset: const Offset(0, 14),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Logo + Subtítulo principal
+                        const SizedBox(height: AppSpacing.lg),
+                        const HelpdeskLogo(scale: 2.8),
+                        const SizedBox(height: AppSpacing.md),
+                        Text(
+                          AppStrings.appSlogan,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.custom(
+                            fontSize: AppTextStyles.fontSize15,
+                            color: AppColors.textSecondary,
                           ),
-                        ],
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Tag 'Portal do Usuário'
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.primary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text(
-                                    'Portal do Usuário',
-                                    style: TextStyle(
-                                      color: AppColors.primary,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
 
-                            // Título
-                            const Text(
-                              'Acesse sua conta',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                        // Card Principal de Login
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.xxl),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusXxl,
+                            ),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(
+                                alpha: AppColors.opacity14,
                               ),
                             ),
-                            const SizedBox(height: AppSpacing.xl),
-
-                            // Label E-mail
-                            const Text(
-                              'E-mail ou Usuário',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: Validators.email,
-                              decoration: InputDecoration(
-                                hintText: 'nome@empresa.com ou usuário',
-                                hintStyle: TextStyle(
-                                  color: AppColors.textSecondary.withOpacity(
-                                    0.6,
-                                  ),
-                                  fontSize: 14,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(
+                                  alpha: AppColors.opacity16,
                                 ),
-                                prefixIcon: const Icon(
-                                  Icons.account_circle_outlined,
-                                  color: AppColors.textSecondary,
+                                blurRadius: AppSpacing.xl,
+                                offset: const Offset(
+                                  AppSpacing.zero,
+                                  AppSpacing.space14,
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
-
-                            // Header Senha + Link Esqueci minha senha
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            ],
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Senha',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
+                                // Tag AppStrings.loginPortal
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.space14,
+                                    vertical: AppSpacing.space6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withValues(
+                                      alpha: AppColors.opacity10,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      AppSpacing.radiusXl,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: AppSpacing.sm,
+                                        height: AppSpacing.sm,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.primary,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      const SizedBox(width: AppSpacing.sm),
+                                      Text(
+                                        AppStrings.loginPortal,
+                                        style: AppTextStyles.custom(
+                                          color: AppColors.primary,
+                                          fontSize: AppTextStyles.fontSize13,
+                                          fontWeight: AppTextStyles.semiBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.lg),
+
+                                // Título
+                                Text(
+                                  AppStrings.loginTitle,
+                                  style: AppTextStyles.custom(
+                                    fontSize: AppTextStyles.fontSize24,
+                                    fontWeight: AppTextStyles.bold,
                                     color: AppColors.textPrimary,
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(AppStrings.needHelp),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Esqueci minha senha',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _passwordController,
-                              obscureText: _obscurePassword,
-                              validator: (v) =>
-                                  Validators.minLength(v, 6, 'A senha'),
-                              decoration: InputDecoration(
-                                hintText: 'Digite sua senha de acesso',
-                                hintStyle: TextStyle(
-                                  color: AppColors.textSecondary.withOpacity(
-                                    0.6,
-                                  ),
-                                  fontSize: 14,
-                                ),
-                                prefixIcon: const Icon(
-                                  Icons.lock_outline_rounded,
-                                  color: AppColors.textSecondary,
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: AppColors.textSecondary,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.md),
+                                const SizedBox(height: AppSpacing.xl),
 
-                            // Checkbox Lembrar Dispositivo
-                            Row(
-                              children: [
-                                SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: Checkbox(
-                                    value: _rememberMe,
-                                    activeColor: AppColors.primary,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _rememberMe = val ?? false;
-                                      });
-                                    },
+                                // Label E-mail
+                                Text(
+                                  AppStrings.emailLabel,
+                                  style: AppTextStyles.custom(
+                                    fontSize: AppTextStyles.fontSize14,
+                                    fontWeight: AppTextStyles.semiBold,
+                                    color: AppColors.textPrimary,
                                   ),
                                 ),
-                                const SizedBox(width: 8),
-                                const Expanded(
-                                  child: Text(
-                                    'Lembrar este dispositivo por 30 dias',
-                                    style: TextStyle(
-                                      fontSize: 13,
+                                const SizedBox(height: AppSpacing.sm),
+                                TextFormField(
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: Validators.email,
+                                  decoration: InputDecoration(
+                                    hintText: AppStrings.emailHint,
+                                    hintStyle: AppTextStyles.custom(
+                                      color: AppColors.textSecondary.withValues(
+                                        alpha: AppColors.opacity60,
+                                      ),
+                                      fontSize: AppTextStyles.fontSize14,
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.account_circle_outlined,
                                       color: AppColors.textSecondary,
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: AppSpacing.lg),
+
+                                // Header Senha + Link Esqueci minha senha
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      AppStrings.passwordLabel,
+                                      style: AppTextStyles.custom(
+                                        fontSize: AppTextStyles.fontSize14,
+                                        fontWeight: AppTextStyles.semiBold,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(AppStrings.needHelp),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        AppStrings.forgotPassword,
+                                        style: AppTextStyles.custom(
+                                          fontSize: AppTextStyles.fontSize13,
+                                          fontWeight: AppTextStyles.semiBold,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                TextFormField(
+                                  controller: _passwordController,
+                                  obscureText: _obscurePassword,
+                                  validator: (v) => Validators.minLength(
+                                    v,
+                                    6,
+                                    AppStrings.passwordValidationLabel,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: AppStrings.passwordHint,
+                                    hintStyle: AppTextStyles.custom(
+                                      color: AppColors.textSecondary.withValues(
+                                        alpha: AppColors.opacity60,
+                                      ),
+                                      fontSize: AppTextStyles.fontSize14,
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outline_rounded,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.md),
+
+                                // Checkbox Lembrar Dispositivo
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: AppSpacing.lg,
+                                      width: AppSpacing.lg,
+                                      child: Checkbox(
+                                        value: _rememberMe,
+                                        activeColor: AppColors.primary,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
+                                        ),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _rememberMe = val ?? false;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.sm),
+                                    Expanded(
+                                      child: Text(
+                                        AppStrings.rememberDevice,
+                                        style: AppTextStyles.custom(
+                                          fontSize: AppTextStyles.fontSize13,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppSpacing.xl),
+
+                                // Botão Entrar
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: AppSpacing.space54,
+                                  child: ElevatedButton(
+                                    onPressed: _isLoading ? null : _handleLogin,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          AppSpacing.radiusLg,
+                                        ),
+                                      ),
+                                      elevation: AppSpacing.zero,
+                                    ),
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                            height: AppSpacing.space22,
+                                            width: AppSpacing.space22,
+                                            child: CircularProgressIndicator(
+                                              color: AppColors.surface,
+                                              strokeWidth:
+                                                  AppSpacing.progressStroke,
+                                            ),
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                AppStrings.loginButton,
+                                                style: AppTextStyles.custom(
+                                                  fontSize:
+                                                      AppTextStyles.fontSize16,
+                                                  fontWeight:
+                                                      AppTextStyles.bold,
+                                                  color: AppColors.surface,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: AppSpacing.space12,
+                                              ),
+                                              Container(
+                                                padding: const EdgeInsets.all(
+                                                  AppSpacing.xs,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.surface
+                                                      .withValues(
+                                                        alpha:
+                                                            AppColors.opacity20,
+                                                      ),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.arrow_forward_rounded,
+                                                  size: AppSpacing.space18,
+                                                  color: AppColors.surface,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
+                                ),
                               ],
                             ),
-                            const SizedBox(height: AppSpacing.xl),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
 
-                            // Botão Entrar
-                            SizedBox(
-                              width: double.infinity,
-                              height: 54,
-                              child: ElevatedButton(
-                                onPressed: _isLoading ? null : _handleLogin,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
+                        // Footer
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AppStrings.helpPrompt,
+                              style: AppTextStyles.custom(
+                                fontSize: AppTextStyles.fontSize13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  Text(
+                                    AppStrings.supportLink,
+                                    style: AppTextStyles.custom(
+                                      fontSize: AppTextStyles.fontSize13,
+                                      fontWeight: AppTextStyles.bold,
+                                      color: AppColors.primary,
+                                    ),
                                   ),
-                                  elevation: 0,
-                                ),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        height: 22,
-                                        width: 22,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2.5,
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Text(
-                                            'Entrar',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Container(
-                                            padding: const EdgeInsets.all(4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white.withOpacity(
-                                                0.2,
-                                              ),
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Icons.arrow_forward_rounded,
-                                              size: 18,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                  SizedBox(width: AppSpacing.space2),
+                                  Icon(
+                                    Icons.north_east_rounded,
+                                    size: AppSpacing.space13,
+                                    color: AppColors.primary,
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // Footer
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Precisa de ajuda para acessar? ',
-                          style: TextStyle(
-                            fontSize: 13,
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          AppStrings.termsAndPrivacy,
+                          style: AppTextStyles.custom(
+                            fontSize: AppTextStyles.fontSize12,
                             color: AppColors.textSecondary,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {},
-                          child: const Row(
-                            children: [
-                              Text(
-                                'Falar com o suporte',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              SizedBox(width: 2),
-                              Icon(
-                                Icons.north_east_rounded,
-                                size: 13,
-                                color: AppColors.primary,
-                              ),
-                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    const Text(
-                      'Termos   •   Privacidade   •   v2.4.0',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
               ),
             ],
           ),

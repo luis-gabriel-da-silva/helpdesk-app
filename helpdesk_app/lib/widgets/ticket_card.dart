@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_spacing.dart';
 import '../core/theme/app_text_styles.dart';
 import '../core/utils/formatters.dart';
 import '../models/ticket_model.dart';
 import 'category_badge.dart';
 import 'status_badge.dart';
+import '../core/constants/app_strings.dart';
 
 class TicketCard extends StatelessWidget {
   final TicketModel ticket;
@@ -26,10 +28,15 @@ class TicketCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       elevation: highlightAsNew ? 5 : 3,
-      shadowColor: (highlightAsNew ? const Color(0xFFE44B5D) : const Color(0xFF5B3E96)).withOpacity(0.2),
+      shadowColor: (highlightAsNew ? AppColors.dangerAccent : AppColors.primary)
+          .withValues(alpha: AppColors.opacity20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        side: BorderSide(color: highlightAsNew ? const Color(0xFFE44B5D).withOpacity(0.55) : const Color(0xFF5B3E96).withOpacity(0.16)),
+        side: BorderSide(
+          color: highlightAsNew
+              ? AppColors.dangerAccent.withValues(alpha: AppColors.opacity55)
+              : AppColors.primary.withValues(alpha: AppColors.opacity16),
+        ),
       ),
       child: InkWell(
         onTap: onTap,
@@ -46,31 +53,60 @@ class TicketCard extends StatelessWidget {
                     children: [
                       CategoryBadge(category: ticket.category),
                       if (highlightAsNew) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(color: const Color(0xFFFFECEE), borderRadius: BorderRadius.circular(20)),
-                          child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(Icons.priority_high_rounded, size: 15, color: Color(0xFFD93045)),
-                            SizedBox(width: 3),
-                            Text('NOVO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFD93045))),
-                          ]),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.dangerSurface,
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusXl,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.priority_high_rounded,
+                                size: AppSpacing.space15,
+                                color: AppColors.danger,
+                              ),
+                              SizedBox(width: AppSpacing.space3),
+                              Text(
+                                AppStrings.newBadge,
+                                style: AppTextStyles.custom(
+                                  fontSize: AppTextStyles.fontSize10,
+                                  fontWeight: AppTextStyles.bold,
+                                  color: AppColors.danger,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ],
                   ),
-                  Row(mainAxisSize: MainAxisSize.min, children: [
-                    StatusBadge(status: ticket.status),
-                    if (onDelete != null) ...[
-                      const SizedBox(width: 4),
-                      IconButton(
-                        tooltip: 'Apagar chamado',
-                        visualDensity: VisualDensity.compact,
-                        onPressed: onDelete,
-                        icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFD93045), size: 21),
-                      ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      StatusBadge(status: ticket.status),
+                      if (onDelete != null) ...[
+                        const SizedBox(width: AppSpacing.xs),
+                        IconButton(
+                          tooltip: AppStrings.deleteTicketAction,
+                          visualDensity: VisualDensity.compact,
+                          onPressed: onDelete,
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppColors.danger,
+                            size: AppSpacing.space21,
+                          ),
+                        ),
+                      ],
                     ],
-                  ]),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -85,7 +121,7 @@ class TicketCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Aberto por: ${ticket.user?.name ?? "Usuário"}',
+                    '${AppStrings.openedBy}: ${ticket.user?.name ?? AppStrings.titleFallback}',
                     style: AppTextStyles.bodySmall,
                   ),
                   Text(

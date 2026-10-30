@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_theme.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/helpdesk_logo.dart';
@@ -33,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _positionController = TextEditingController();
 
   UserModel? _user;
-  String _department = 'Geral';
+  String _department = AppStrings.departmentGeneral;
   Uint8List? _photoBytes;
   String? _photoName;
   String? _photoPath;
@@ -96,8 +98,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SnackBar(
             content: Text(
               size == null
-                  ? 'Não foi possível verificar o tamanho da imagem.'
-                  : 'A imagem deve ter no máximo 5 MB.',
+                  ? AppStrings.profileImageSizeError
+                  : AppStrings.profileImageTooLarge,
             ),
           ),
         );
@@ -114,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Não foi possível abrir a imagem: $error')),
+        SnackBar(content: Text(AppStrings.imageOpenErrorMessage(error))),
       );
     }
   }
@@ -126,22 +128,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _emailController.text.trim().isEmpty ||
         _positionController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha nome, e-mail e cargo.')),
+        const SnackBar(content: Text(AppStrings.fillProfileFields)),
       );
       return;
     }
 
     setState(() => _isSaving = true);
     try {
-      final updatedUser = await _authService.updateProfile(UserModel(
-        id: currentUser.id,
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        role: currentUser.role,
-        position: _positionController.text.trim(),
-        department: _department,
-        avatarUrl: currentUser.avatarUrl,
-      ), avatarBytes: _photoBytes, avatarPath: _photoPath, avatarName: _photoName);
+      final updatedUser = await _authService.updateProfile(
+        UserModel(
+          id: currentUser.id,
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          role: currentUser.role,
+          position: _positionController.text.trim(),
+          department: _department,
+          avatarUrl: currentUser.avatarUrl,
+        ),
+        avatarBytes: _photoBytes,
+        avatarPath: _photoPath,
+        avatarName: _photoName,
+      );
       if (!mounted) return;
       _user = updatedUser;
       _photoBytes = null;
@@ -151,15 +158,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       } else {
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Perfil atualizado.'),
-          ),
+          const SnackBar(content: Text(AppStrings.profileUpdated)),
         );
       }
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Não foi possível salvar as alterações.')),
+        const SnackBar(content: Text(AppStrings.saveProfileError)),
       );
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -170,13 +175,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isLoggingOut = true);
     try {
       await _authService.logout();
-      if (mounted) context.go('/login');
+      if (mounted) context.goNamed(AppRoutes.login);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isLoggingOut = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Não foi possível desconectar da conta.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text(AppStrings.logoutError)));
     }
   }
 
@@ -184,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/home');
+      context.goNamed(AppRoutes.home);
     }
   }
 
@@ -193,39 +197,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Voltar',
+          tooltip: AppStrings.goBack,
           onPressed: _goBack,
           icon: const Icon(Icons.arrow_back),
         ),
         title: const Text(AppStrings.profileTitle),
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 16),
+            padding: EdgeInsets.only(right: AppSpacing.md),
             child: HelpdeskLogo(scale: 0.85),
           ),
         ],
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment(0, -0.4),
-            radius: 1.35,
-            colors: [Colors.white, Color(0xFFF6F2FC), Color(0xFFEDE6F8)],
-            stops: [0.15, 0.65, 1],
-          ),
+          gradient: AppTheme.cloudyBackgroundGradient,
         ),
         child: SafeArea(
           top: false,
           child: ResponsiveContainer(
-            maxWidth: 900,
+            maxWidth: AppSpacing.maxWidthProfile,
             alignment: Alignment.topCenter,
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _user == null
-                ? const Center(child: Text('Perfil não encontrado.'))
+                ? const Center(child: Text(AppStrings.profileNotFound))
                 : LayoutBuilder(
                     builder: (context, constraints) {
-                      final isWide = constraints.maxWidth > 700;
+                      final isWide =
+                          constraints.maxWidth >
+                          AppSpacing.breakpointProfileWide;
                       final leftColumn = Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -237,7 +238,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             photoBytes: _photoBytes,
                             photoUrl: _user!.avatarUrl == null
                                 ? null
-                                : _authService.resolveAvatarUrl(_user!.avatarUrl!),
+                                : _authService.resolveAvatarUrl(
+                                    _user!.avatarUrl!,
+                                  ),
                             onChangePhoto: _pickPhoto,
                           ),
                           const SizedBox(height: AppSpacing.md),
@@ -296,7 +299,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     photoBytes: _photoBytes,
                                     photoUrl: _user!.avatarUrl == null
                                         ? null
-                                        : _authService.resolveAvatarUrl(_user!.avatarUrl!),
+                                        : _authService.resolveAvatarUrl(
+                                            _user!.avatarUrl!,
+                                          ),
                                     onChangePhoto: _pickPhoto,
                                   ),
                                   const SizedBox(height: AppSpacing.md),
@@ -333,23 +338,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: 52,
+          height: AppSpacing.space52,
           child: ElevatedButton.icon(
             onPressed: _isSaving ? null : _saveChanges,
             icon: _isSaving
                 ? const SizedBox(
-                    width: 18,
-                    height: 18,
+                    height: AppSpacing.space18,
+                    width: AppSpacing.space18,
                     child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
+                      color: AppColors.surface,
+                      strokeWidth: AppSpacing.space2,
                     ),
                   )
                 : const Icon(Icons.save_outlined),
-            label: Text(_isSaving ? 'Salvando...' : 'Salvar Alterações'),
+            label: Text(_isSaving ? AppStrings.saving : AppStrings.saveProfile),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.surface,
               shape: const StadiumBorder(),
             ),
           ),
@@ -359,13 +364,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onPressed: _isLoggingOut ? null : _logout,
           icon: _isLoggingOut
               ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  height: AppSpacing.space18,
+                  width: AppSpacing.space18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: AppSpacing.space2,
+                  ),
                 )
               : const Icon(Icons.logout_rounded),
-          label: Text(_isLoggingOut ? 'Desconectando...' : 'Desconectar da conta'),
-          style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+          label: Text(
+            _isLoggingOut ? AppStrings.disconnecting : AppStrings.disconnect,
+          ),
+          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
         ),
       ],
     );

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
+import 'package:helpdesk_app/core/theme/app_spacing.dart';
 
 class FileUploader extends StatelessWidget {
   final String? fileName;
@@ -18,36 +22,39 @@ class FileUploader extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       child: CustomPaint(
         foregroundPainter: _DashedBorderPainter(
-          color: AppColors.primary.withOpacity(0.4),
+          color: AppColors.primary.withValues(alpha: AppColors.opacity40),
         ),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.space20),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.035),
-            borderRadius: BorderRadius.circular(16),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity035),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           ),
           child: Column(
             children: [
-              const Icon(Icons.attach_file, color: AppColors.primary, size: 28),
-              const SizedBox(height: 8),
+              const Icon(
+                Icons.attach_file,
+                color: AppColors.primary,
+                size: AppSpacing.space28,
+              ),
+              const SizedBox(height: AppSpacing.sm),
               Text(
-                fileName ??
-                    'Clique para selecionar ou arraste uma captura - PNG, JPG ou LOG até 15MB',
+                fileName ?? AppStrings.attachOrientative,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: AppTextStyles.custom(
                   color: AppColors.textSecondary,
-                  fontSize: 13,
+                  fontSize: AppTextStyles.fontSize13,
                 ),
               ),
               if (fileName != null && onRemove != null)
                 TextButton.icon(
                   onPressed: onRemove,
-                  icon: const Icon(Icons.close, size: 16),
-                  label: const Text('Remover arquivo'),
+                  icon: const Icon(Icons.close, size: AppSpacing.md),
+                  label: const Text(AppStrings.removeFile),
                 ),
             ],
           ),
@@ -66,10 +73,7 @@ class _DashedBorderPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final borderPath = Path()
       ..addRRect(
-        RRect.fromRectAndRadius(
-          Offset.zero & size,
-          const Radius.circular(16),
-        ),
+        RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(16)),
       );
     final paint = Paint()
       ..color = color

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../models/user_model.dart';
 import '../../../../widgets/helpdesk_logo.dart';
 import '../../../../services/api_config.dart';
+import '../../../core/constants/app_strings.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
+import 'package:helpdesk_app/core/theme/app_spacing.dart';
 
 class HomeHeader extends StatelessWidget {
   final UserModel? user;
@@ -29,33 +34,38 @@ class HomeHeader extends StatelessWidget {
         Row(
           children: [
             const HelpdeskLogo(),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.space12),
             Container(
-              height: 20,
-              width: 1,
-              color: AppColors.textSecondary.withOpacity(0.2),
+              height: AppSpacing.space20,
+              width: AppSpacing.hairline,
+              color: AppColors.textSecondary.withValues(
+                alpha: AppColors.opacity20,
+              ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.space12),
             Text(
-              'Portal',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              AppStrings.portal,
+              style: AppTextStyles.custom(
+                fontSize: AppTextStyles.fontSize18,
+                fontWeight: AppTextStyles.bold,
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.space2,
+              ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.primary.withValues(alpha: AppColors.opacity10),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
               child: Text(
-                isTecnico ? 'TÉCNICO' : 'CLIENTE',
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
+                isTecnico ? AppStrings.technicianRole : AppStrings.customerRole,
+                style: AppTextStyles.custom(
+                  fontSize: AppTextStyles.fontSize10,
+                  fontWeight: AppTextStyles.bold,
                   color: AppColors.primary,
                 ),
               ),
@@ -65,12 +75,12 @@ class HomeHeader extends StatelessWidget {
         Row(
           children: [
             IconButton(
-              tooltip: 'Notificações',
+              tooltip: AppStrings.notificationsTitle,
               onPressed: onNotificationsTap,
               icon: Badge(
                 isLabelVisible: unreadCount > 0,
                 label: Text(unreadCount > 9 ? '9+' : '$unreadCount'),
-                backgroundColor: const Color(0xFFE44B5D),
+                backgroundColor: AppColors.dangerAccent,
                 child: const Icon(
                   Icons.notifications_none_rounded,
                   color: AppColors.textPrimary,
@@ -80,20 +90,24 @@ class HomeHeader extends StatelessWidget {
             GestureDetector(
               onTap: onProfileTap,
               child: CircleAvatar(
-                radius: 18,
-                backgroundColor: AppColors.primary.withOpacity(0.15),
-              backgroundImage: user?.avatarUrl == null
-                  ? null
-                  : NetworkImage(ApiConfig.resolveMediaUrl(user!.avatarUrl!)),
-              child: user?.avatarUrl != null
-                  ? null
-                  : Text(
-                      userName.isEmpty ? 'U' : userName[0].toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                radius: AppSpacing.avatarRadiusSmall,
+                backgroundColor: AppColors.primary.withValues(
+                  alpha: AppColors.opacity15,
+                ),
+                backgroundImage: user?.avatarUrl == null
+                    ? null
+                    : NetworkImage(ApiConfig.resolveMediaUrl(user!.avatarUrl!)),
+                child: user?.avatarUrl != null
+                    ? null
+                    : Text(
+                        userName.isEmpty
+                            ? AppStrings.userInitial
+                            : userName[0].toUpperCase(),
+                        style: AppTextStyles.custom(
+                          fontWeight: AppTextStyles.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
-                    ),
               ),
             ),
           ],

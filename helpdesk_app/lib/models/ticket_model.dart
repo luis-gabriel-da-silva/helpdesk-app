@@ -49,4 +49,18 @@ class TicketModel {
           : [],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'category': category,
+    'status': status,
+    'priority': priority,
+    'created_at': createdAt.toIso8601String(),
+    'updated_at': updatedAt.toIso8601String(),
+    'user': user?.toJson(),
+    'technician': technician?.toJson(),
+    'messages': messages.map((message) => message.toJson()).toList(),
+    'is_new_for_technician': isNewForTechnician,
+  };
 }

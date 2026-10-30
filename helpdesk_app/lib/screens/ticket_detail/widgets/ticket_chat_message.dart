@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../models/ticket_message_model.dart';
 import '../../../../services/api_config.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
+import 'package:helpdesk_app/core/theme/app_spacing.dart';
 
 class TicketChatMessage extends StatelessWidget {
   final TicketMessageModel message;
@@ -13,16 +17,18 @@ class TicketChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.space12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(AppSpacing.zero, AppSpacing.xs),
           ),
         ],
       ),
@@ -33,29 +39,32 @@ class TicketChatMessage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                message.user?.name ?? 'Usuário',
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+                message.user?.name ?? AppStrings.titleFallback,
+                style: AppTextStyles.custom(
+                  fontSize: AppTextStyles.fontSize13,
+                  fontWeight: AppTextStyles.bold,
                   color: AppColors.primary,
                 ),
               ),
               Text(
                 Formatters.formatDate(message.createdAt),
-                style: const TextStyle(
-                  fontSize: 11,
+                style: AppTextStyles.custom(
+                  fontSize: AppTextStyles.fontSize11,
                   color: AppColors.textSecondary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.space6),
           Text(
             message.message,
-            style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+            style: AppTextStyles.custom(
+              fontSize: AppTextStyles.fontSize14,
+              color: AppColors.textPrimary,
+            ),
           ),
           if (message.attachmentUrl != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.space10),
             _buildAttachment(message.attachmentUrl!),
           ],
         ],
@@ -68,7 +77,7 @@ class TicketChatMessage extends StatelessWidget {
     final uri = Uri.tryParse(url);
     final fileName = uri != null && uri.pathSegments.isNotEmpty
         ? uri.pathSegments.last
-        : 'Anexo';
+        : AppStrings.attachmentName;
     final extension = fileName.split('.').last.toLowerCase();
     final isImage = {'jpg', 'jpeg', 'png', 'webp'}.contains(extension);
 
@@ -76,25 +85,29 @@ class TicketChatMessage extends StatelessWidget {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.attach_file, color: AppColors.primary, size: 18),
-          const SizedBox(width: 6),
+          const Icon(
+            Icons.attach_file,
+            color: AppColors.primary,
+            size: AppSpacing.space18,
+          ),
+          const SizedBox(height: AppSpacing.space6),
           Flexible(child: Text(fileName)),
         ],
       );
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: Image.network(
         url,
         width: double.infinity,
-        height: 240,
+        height: AppSpacing.attachmentPreviewHeight,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) => Container(
-          height: 100,
+          height: AppSpacing.space100,
           alignment: Alignment.center,
           color: AppColors.inputBackground,
-          child: const Text('Não foi possível carregar a imagem do anexo.'),
+          child: const Text(AppStrings.attachmentImageError),
         ),
       ),
     );

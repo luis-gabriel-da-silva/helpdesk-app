@@ -27,7 +27,9 @@ class NotificationService {
     }
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     final data = (decoded['data'] as List? ?? const [])
-        .map((item) => AppNotificationModel.fromJson(item as Map<String, dynamic>))
+        .map(
+          (item) => AppNotificationModel.fromJson(item as Map<String, dynamic>),
+        )
         .toList();
     return NotificationSnapshot(data, decoded['unread_count'] as int? ?? 0);
   }

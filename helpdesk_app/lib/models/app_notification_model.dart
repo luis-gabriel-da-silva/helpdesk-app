@@ -36,7 +36,21 @@ class AppNotificationModel {
         ticketCategory: json['ticket_category'] as String?,
         openedBy: json['opened_by'] as String?,
         senderName: json['sender_name'] as String?,
-        isRead: json['read_at'] != null,
+        isRead: json['read_at'] != null || json['is_read'] == true,
         createdAt: DateTime.parse(json['created_at'] as String),
       );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'ticket_id': ticketId,
+    'title': title,
+    'body': body,
+    'ticket_title': ticketTitle,
+    'type': type,
+    'ticket_category': ticketCategory,
+    'opened_by': openedBy,
+    'sender_name': senderName,
+    'is_read': isRead,
+    'created_at': createdAt.toIso8601String(),
+  };
 }

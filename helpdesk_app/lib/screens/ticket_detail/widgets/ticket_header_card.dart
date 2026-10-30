@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../models/ticket_model.dart';
 import '../../../../services/api_config.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
 class TicketHeaderCard extends StatelessWidget {
   final TicketModel ticket;
@@ -16,14 +19,16 @@ class TicketHeaderCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
-            blurRadius: 18,
-            offset: const Offset(0, 5),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+            blurRadius: AppSpacing.space18,
+            offset: const Offset(AppSpacing.zero, AppSpacing.space5),
           ),
         ],
       ),
@@ -35,26 +40,28 @@ class TicketHeaderCard extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: AppSpacing.space10,
+                  vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.primary.withValues(
+                    alpha: AppColors.opacity10,
+                  ),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Row(
                   children: [
                     const Icon(
                       Icons.lock_outline_rounded,
-                      size: 14,
+                      size: AppSpacing.space14,
                       color: AppColors.primary,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       Formatters.formatCategory(ticket.category),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                      style: AppTextStyles.custom(
+                        fontSize: AppTextStyles.fontSize12,
+                        fontWeight: AppTextStyles.bold,
                         color: AppColors.primary,
                       ),
                     ),
@@ -63,56 +70,80 @@ class TicketHeaderCard extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: AppSpacing.space10,
+                  vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(ticket.status).withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  color: _getStatusColor(ticket.status)
+                      .withValues(alpha: AppColors.opacity15),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Text(
                   Formatters.formatStatus(ticket.status),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                  style: AppTextStyles.custom(
+                    fontSize: AppTextStyles.fontSize12,
+                    fontWeight: AppTextStyles.bold,
                     color: _getStatusColor(ticket.status),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.space12),
           Text(
             ticket.title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            style: AppTextStyles.custom(
+              fontSize: AppTextStyles.fontSize18,
+              fontWeight: AppTextStyles.bold,
               color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               CircleAvatar(
-                radius: 20,
-                backgroundColor: AppColors.primary.withOpacity(0.14),
+                radius: AppSpacing.avatarRadiusMedium,
+                backgroundColor: AppColors.primary.withValues(
+                  alpha: AppColors.opacity14,
+                ),
                 backgroundImage: ticket.user?.avatarUrl == null
                     ? null
-                    : NetworkImage(ApiConfig.resolveMediaUrl(ticket.user!.avatarUrl!)),
+                    : NetworkImage(
+                        ApiConfig.resolveMediaUrl(ticket.user!.avatarUrl!),
+                      ),
                 child: ticket.user?.avatarUrl != null
                     ? null
                     : Text(
-                        (ticket.user?.name.trim().isNotEmpty == true ? ticket.user!.name.trim()[0] : 'U').toUpperCase(),
-                        style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                        (ticket.user?.name.trim().isNotEmpty == true
+                                ? ticket.user!.name.trim()[0]
+                                : AppStrings.userInitial)
+                            .toUpperCase(),
+                        style: AppTextStyles.custom(
+                          color: AppColors.primary,
+                          fontWeight: AppTextStyles.bold,
+                        ),
                       ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.space10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Aberto por ${ticket.user?.name ?? 'Usuário'}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-                    Text(Formatters.formatDate(ticket.createdAt), style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      '${AppStrings.openedBy} ${ticket.user?.name ?? AppStrings.titleFallback}',
+                      style: AppTextStyles.custom(
+                        fontSize: AppTextStyles.fontSize13,
+                        fontWeight: AppTextStyles.semiBold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      Formatters.formatDate(ticket.createdAt),
+                      style: AppTextStyles.custom(
+                        fontSize: AppTextStyles.fontSize12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -126,13 +157,13 @@ class TicketHeaderCard extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase().replaceAll('_', ' ')) {
       case 'pendente':
-        return Colors.orange;
+        return AppColors.statusPendente;
       case 'em andamento':
-        return Colors.blue;
+        return AppColors.statusEmAndamento;
       case 'concluido':
       case 'concluído':
       case 'resolvido':
-        return Colors.green;
+        return AppColors.priorityLow;
       default:
         return AppColors.primary;
     }

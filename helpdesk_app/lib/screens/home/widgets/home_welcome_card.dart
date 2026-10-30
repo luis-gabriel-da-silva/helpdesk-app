@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../models/user_model.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
 class HomeWelcomeCard extends StatelessWidget {
   final UserModel? user;
@@ -22,19 +25,21 @@ class HomeWelcomeCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         gradient: const LinearGradient(
-          colors: [Color(0xFFFFFFFF), Color(0xFFF8F5FF)],
+          colors: [AppColors.surface, AppColors.surfaceTint],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withOpacity(0.18)),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppColors.opacity18),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
-            blurRadius: 18,
-            offset: const Offset(0, 5),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+            blurRadius: AppSpacing.space18,
+            offset: const Offset(AppSpacing.zero, AppSpacing.space5),
           ),
         ],
       ),
@@ -45,28 +50,28 @@ class HomeWelcomeCard extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Olá, ${firstName == null || firstName.isEmpty ? 'Usuário' : firstName}',
+                  '${AppStrings.greeting}, ${firstName == null || firstName.isEmpty ? AppStrings.unknownUser : firstName}',
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  style: AppTextStyles.custom(
+                    fontSize: AppTextStyles.fontSize20,
+                    fontWeight: AppTextStyles.bold,
                     color: AppColors.textPrimary,
                   ),
                 ),
               ),
               if (!isTecnico) ...[
-                const SizedBox(width: 6),
-                const Text('👋'),
+                const SizedBox(width: AppSpacing.space6),
+                const Icon(Icons.waving_hand_rounded, color: AppColors.primary),
               ],
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             isTecnico
-                ? '⚡ $totalTickets chamados sob seu monitoramento hoje'
-                : 'Acompanhe o andamento das suas solicitações em tempo real',
-            style: const TextStyle(
-              fontSize: 12,
+                ? '$totalTickets ${AppStrings.technicianWelcome}'
+                : AppStrings.customerWelcome,
+            style: AppTextStyles.custom(
+              fontSize: AppTextStyles.fontSize12,
               color: AppColors.textSecondary,
             ),
           ),

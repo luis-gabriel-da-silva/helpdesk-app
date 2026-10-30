@@ -27,4 +27,13 @@ class TicketMessageModel {
       user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'ticket_id': ticketId,
+    'message': message,
+    'attachment_url': attachmentUrl,
+    'created_at': createdAt.toIso8601String(),
+    'user': user?.toJson(),
+  };
 }

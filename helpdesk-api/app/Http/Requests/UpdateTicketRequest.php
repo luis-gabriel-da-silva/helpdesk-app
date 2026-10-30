@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class UpdateTicketRequest extends FormRequest
 {
@@ -13,19 +14,20 @@ class UpdateTicketRequest extends FormRequest
 
     public function rules(): array
     {
-        $user = $this->user();
-
-        if ($user && $user->role === 'tecnico') {
-            return [
-                'status' => 'required|in:pendente,em_andamento,concluido',
-                'response_notes' => 'nullable|string',
-            ];
-        }
-
         return [
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
+            'category' => 'sometimes|in:hardware,login,db_infra,financeiro',
             'priority' => 'sometimes|in:baixa,media,alta',
+            'description' => 'sometimes|string|min:10',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            if (! $this->hasAny(['title', 'category', 'priority', 'description'])) {
+                $validator->errors()->add('ticket', 'Informe ao menos um campo para atualizar.');
+            }
+        });
     }
 }

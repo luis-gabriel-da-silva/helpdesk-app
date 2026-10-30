@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -51,7 +50,10 @@ class AuthService {
     String? avatarName,
   }) async {
     final token = await getToken();
-    final request = http.MultipartRequest('POST', Uri.parse(ApiConfig.profileUrl));
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse(ApiConfig.profileUrl),
+    );
     request.headers.addAll({
       'Accept': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
@@ -63,13 +65,17 @@ class AuthService {
       'department': user.department,
     });
     if (avatarBytes != null && kIsWeb) {
-      request.files.add(http.MultipartFile.fromBytes(
-        'avatar',
-        avatarBytes,
-        filename: avatarName ?? 'profile.png',
-      ));
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'avatar',
+          avatarBytes,
+          filename: avatarName ?? 'profile.png',
+        ),
+      );
     } else if (avatarPath != null) {
-      request.files.add(await http.MultipartFile.fromPath('avatar', avatarPath));
+      request.files.add(
+        await http.MultipartFile.fromPath('avatar', avatarPath),
+      );
     }
     final streamed = await request.send();
     final response = await http.Response.fromStream(streamed);

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserNotification;
 use App\Repositories\Contracts\TicketRepositoryInterface;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class TicketService extends BaseService
 {
@@ -110,6 +111,39 @@ class TicketService extends BaseService
             'status' => $status,
             'technician_id' => $user->id,
         ]);
+    }
+
+    public function updateTicket(User $user, int $ticketId, array $data)
+    {
+        $ticket = $this->getById($ticketId);
+        if ($ticket->user_id !== $user->id) {
+            throw new \Exception('Somente quem abriu o chamado pode editar seus dados.', 403);
+        }
+        if ($ticket->status === 'concluido') {
+            throw new \Exception('Chamados concluídos não podem ser editados.', 422);
+        }
+
+        return DB::transaction(function () use ($ticket, $data) {
+            $ticket->update(collect($data)->only(['title', 'category', 'priority'])->all());
+
+            if (array_key_exists('description', $data)) {
+                $initialMessage = $ticket->messages()
+                    ->where('user_id', $ticket->user_id)
+                    ->oldest('id')
+                    ->first();
+
+                if ($initialMessage) {
+                    $initialMessage->update(['message' => $data['description']]);
+                } else {
+                    $ticket->messages()->create([
+                        'user_id' => $ticket->user_id,
+                        'message' => $data['description'],
+                    ]);
+                }
+            }
+
+            return $ticket->fresh(['user', 'technician', 'messages.user']);
+        });
     }
 
     public function deleteTicket(User $user, int $ticketId): void

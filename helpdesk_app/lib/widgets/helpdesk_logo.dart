@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../core/constants/app_strings.dart';
 import '../core/theme/app_colors.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
 class HelpdeskLogo extends StatelessWidget {
   final double scale;
@@ -13,21 +16,21 @@ class HelpdeskLogo extends StatelessWidget {
       text: TextSpan(
         children: [
           TextSpan(
-            text: 'HELP!\n',
-            style: TextStyle(
-              fontSize: 18 * scale,
-              fontWeight: FontWeight.w900,
+            text: AppStrings.logoHelp,
+            style: AppTextStyles.custom(
+              fontSize: AppTextStyles.fontSize18 * scale,
+              fontWeight: AppTextStyles.black,
               color: AppColors.primary,
-              height: 0.9,
+              height: AppTextStyles.logoLineHeight,
             ),
           ),
           TextSpan(
-            text: 'DESK',
-            style: TextStyle(
-              fontSize: 9 * scale,
-              fontWeight: FontWeight.w800,
+            text: AppStrings.logoDesk,
+            style: AppTextStyles.custom(
+              fontSize: AppTextStyles.fontSize9 * scale,
+              fontWeight: AppTextStyles.extraBold,
               color: AppColors.textPrimary,
-              letterSpacing: 2 * scale,
+              letterSpacing: AppTextStyles.logoLetterSpacing * scale,
             ),
           ),
         ],

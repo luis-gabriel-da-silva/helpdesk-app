@@ -1,3 +1,5 @@
+import '../constants/app_strings.dart';
+
 class Formatters {
   /// Formata uma data [DateTime] para o formato dd/mm/aaaa hh:mm
   static String formatDate(DateTime date) {
@@ -14,13 +16,13 @@ class Formatters {
   static String formatCategory(String category) {
     switch (category) {
       case 'hardware':
-        return 'Hardware';
+        return AppStrings.catHardware;
       case 'login':
-        return 'Login / Acesso';
+        return AppStrings.catLogin;
       case 'db_infra':
-        return 'Banco de Dados / Infra';
+        return AppStrings.catDbInfra;
       case 'financeiro':
-        return 'Financeiro';
+        return AppStrings.catFinanceiro;
       default:
         return category;
     }
@@ -30,11 +32,11 @@ class Formatters {
   static String formatStatus(String status) {
     switch (status) {
       case 'pendente':
-        return 'Pendente';
+        return AppStrings.statusPending;
       case 'em_andamento':
-        return 'Em Andamento';
+        return AppStrings.statusInProgress;
       case 'concluido':
-        return 'Concluído';
+        return AppStrings.statusCompleted;
       default:
         return status;
     }

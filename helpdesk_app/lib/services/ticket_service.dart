@@ -7,6 +7,7 @@ import '../models/ticket_model.dart';
 import '../models/ticket_message_model.dart';
 import 'api_config.dart';
 import 'auth_service.dart';
+import '../core/constants/app_strings.dart';
 
 class TicketService {
   final AuthService _authService = AuthService();
@@ -41,6 +42,32 @@ class TicketService {
     } else {
       throw Exception('Erro ao carregar detalhes do chamado.');
     }
+  }
+
+  Future<TicketModel> updateTicket({
+    required int ticketId,
+    required String title,
+    required String category,
+    required String priority,
+    required String description,
+  }) async {
+    final token = await _authService.getToken();
+    final response = await http.put(
+      Uri.parse('${ApiConfig.baseUrl}/tickets/$ticketId'),
+      headers: ApiConfig.headers(token),
+      body: jsonEncode({
+        'title': title,
+        'category': category,
+        'priority': priority,
+        'description': description,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+      return TicketModel.fromJson(data);
+    }
+    throw Exception(_responseError(response, 'Erro ao editar chamado.'));
   }
 
   Future<void> deleteTicket(int ticketId) async {
@@ -156,7 +183,7 @@ class TicketService {
       final data = jsonDecode(response.body)['data'];
       return TicketMessageModel.fromJson(data);
     } else {
-      throw Exception('Erro ao enviar mensagem.');
+      throw Exception(AppStrings.sendMessageError);
     }
   }
 
@@ -169,7 +196,9 @@ class TicketService {
         final errors = decoded['errors'];
         if (errors is Map<String, dynamic>) {
           for (final value in errors.values) {
-            if (value is List && value.isNotEmpty) return value.first.toString();
+            if (value is List && value.isNotEmpty) {
+              return value.first.toString();
+            }
           }
         }
       }
@@ -190,7 +219,7 @@ class TicketService {
       final data = jsonDecode(response.body)['data'];
       return TicketModel.fromJson(data);
     } else {
-      throw Exception('Erro ao atualizar status do chamado.');
+      throw Exception(AppStrings.updateStatusError);
     }
   }
 }

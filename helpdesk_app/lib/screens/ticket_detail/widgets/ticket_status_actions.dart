@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+
+import 'package:helpdesk_app/core/theme/app_text_styles.dart';
+import 'package:helpdesk_app/core/theme/app_spacing.dart';
 
 class TicketStatusActions extends StatelessWidget {
   final String currentStatus;
@@ -15,54 +19,56 @@ class TicketStatusActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.space12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: AppColors.primary.withValues(alpha: AppColors.opacity12),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(AppSpacing.zero, AppSpacing.xs),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Alterar Status do Chamado',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+          Text(
+            AppStrings.newStatusTitle,
+            style: AppTextStyles.custom(
+              fontSize: AppTextStyles.fontSize12,
+              fontWeight: AppTextStyles.bold,
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               _StatusButton(
-                label: 'Pendente',
+                label: AppStrings.statusPending,
                 statusKey: 'pendente',
                 currentStatus: currentStatus,
-                color: Colors.orange,
+                color: AppColors.statusPendente,
                 onTap: () => onStatusChanged('pendente'),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(height: AppSpacing.sm),
               _StatusButton(
-                label: 'Em Andamento',
+                label: AppStrings.statusInProgress,
                 statusKey: 'em_andamento',
                 currentStatus: currentStatus,
-                color: Colors.blue,
+                color: AppColors.statusEmAndamento,
                 onTap: () => onStatusChanged('em_andamento'),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(height: AppSpacing.sm),
               _StatusButton(
-                label: 'Concluído',
+                label: AppStrings.statusCompleted,
                 statusKey: 'concluido',
                 currentStatus: currentStatus,
-                color: Colors.green,
+                color: AppColors.priorityLow,
                 onTap: () => onStatusChanged('concluido'),
               ),
             ],
@@ -96,21 +102,25 @@ class _StatusButton extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.space10),
           decoration: BoxDecoration(
-            color: isSelected ? color : color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? color : Colors.transparent),
+            color: isSelected
+                ? color
+                : color.withValues(alpha: AppColors.opacity10),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(
+              color: isSelected ? color : AppColors.transparent,
+            ),
           ),
           child: Center(
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: isSelected ? Colors.white : color,
+              style: AppTextStyles.custom(
+                fontSize: AppTextStyles.fontSize12,
+                fontWeight: AppTextStyles.bold,
+                color: isSelected ? AppColors.surface : color,
               ),
             ),
           ),

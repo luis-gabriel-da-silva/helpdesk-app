@@ -34,12 +34,15 @@ class CategoryBadge extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: AppColors.opacity12),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Text(
         Formatters.formatCategory(category),
-        style: AppTextStyles.badge.copyWith(color: color, fontSize: 11),
+        style: AppTextStyles.badge.copyWith(
+          color: color,
+          fontSize: AppTextStyles.fontSize11,
+        ),
       ),
     );
   }

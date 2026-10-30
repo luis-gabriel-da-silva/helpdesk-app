@@ -32,9 +32,9 @@ class StatusBadge extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: AppColors.opacity15),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-        border: Border.all(color: color, width: 1),
+        border: Border.all(color: color, width: AppSpacing.hairline),
       ),
       child: Text(
         Formatters.formatStatus(status),
