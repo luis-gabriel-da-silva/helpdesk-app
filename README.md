@@ -114,12 +114,23 @@ As rotas nomeadas correspondentes ficam em `helpdesk_app/lib/core/routes/app_rou
 
 ### Capturas de tela do aplicativo
 
-![Página de login](docs/screenshots/login.png)
-![Dashboard do cliente](docs/screenshots/dashboard-cliente.png)
-![Dashboard do técnico](docs/screenshots/dashboard-tecnico.png)
-![Novo chamado](docs/screenshots/novo-chamado.png)
-![Detalhes do chamado](docs/screenshots/detalhes-chamado.png)
-![Página do perfil](docs/screenshots/perfil.png)
+#### Tela de Login
+<img src="docs/screenshots/login.png" width="320" alt="Página de login">
+
+#### Dashboard do Cliente
+<img src="docs/screenshots/dashboard-cliente.png" width="320" alt="Dashboard do cliente">
+
+#### Dashboard do Técnico
+<img src="docs/screenshots/dashboard-tecnico.png" width="320" alt="Dashboard do técnico">
+
+#### Novo Chamado
+<img src="docs/screenshots/novo-chamado.png" width="320" alt="Novo chamado">
+
+#### Detalhes do Chamado
+<img src="docs/screenshots/detalhes-chamado.png" width="320" alt="Detalhes do chamado">
+
+#### Página do Perfil
+<img src="docs/screenshots/perfil.png" width="320" alt="Página do perfil">
 
 
 ### Principais entidades
