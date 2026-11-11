@@ -112,20 +112,15 @@ No Flutter, as telas chamam classes da pasta `services/`; elas fazem as requisi�
 
 As rotas nomeadas correspondentes ficam em `helpdesk_app/lib/core/routes/app_routes.dart` e `app_router.dart`: `/login`, `/home`, `/tickets/new`, `/tickets/:id`, `/tickets/:id/edit` e `/profile/:id`.
 
-### Capturas de tela para a entrega
+### Capturas de tela do aplicativo
 
-Salve as imagens capturadas durante a demonstração em `docs/screenshots/`. As capturas devem usar dados de demonstração, sem tokens, senhas ou informações pessoais reais.
+![Página de login](docs/screenshots/login.png)
+![Dashboard do cliente](docs/screenshots/dashboard-cliente.png)
+![Dashboard do técnico](docs/screenshots/dashboard-tecnico.png)
+![Novo chamado](docs/screenshots/novo-chamado.png)
+![Detalhes do chamado](docs/screenshots/detalhes-chamado.png)
+![Página do perfil](docs/screenshots/perfil.png)
 
-| Arquivo sugerido | O que mostrar |
-|---|---|
-| `docs/screenshots/login.png` | Tela de login com a identidade visual. |
-| `docs/screenshots/dashboard-cliente.png` | Dashboard de cliente com lista de chamados. |
-| `docs/screenshots/dashboard-tecnico.png` | Dashboard de técnico, destacando chamados novos. |
-| `docs/screenshots/novo-chamado.png` | Formulário preenchido, categoria, prioridade e anexo. |
-| `docs/screenshots/detalhes-chamado.png` | Detalhes, conversa, imagem anexada e alteração de status por técnico. |
-| `docs/screenshots/perfil.png` | Perfil com dados e foto atualizada. |
-
-Depois de adicionar as imagens, inclua-as aqui usando Markdown, por exemplo: `![Dashboard do cliente](docs/screenshots/dashboard-cliente.png)`.
 
 ### Principais entidades
 
@@ -220,6 +215,12 @@ O `DatabaseSeeder` cria três clientes e três técnicos. As contas são somente
 # Acompanhar os logs
 docker compose --env-file .env.docker logs -f
 
+# Abrir um terminal dentro do container Laravel (serviço api)
+docker compose --env-file .env.docker exec api bash
+
+# Executar um seed sem abrir o terminal interativo
+docker compose --env-file .env.docker exec api php artisan db:seed --class=DatabaseSeeder --force
+
 # Recriar imagens e aplicar alterações no Flutter Web/API
 docker compose --env-file .env.docker up -d --build api web
 
@@ -229,11 +230,38 @@ docker compose --env-file .env.docker down
 
 Os dados do MySQL e os anexos ficam em volumes Docker e são preservados ao parar os containers. `docker compose down -v` também remove esses volumes e apaga os dados locais.
 
-## Desenvolvimento sem Docker
+O shell acima abre o container da **API Laravel**. O Flutter não roda nesse container: no Docker, o serviço `web` entrega a versão web já compilada pelo Nginx. Para abrir o aplicativo no navegador quando o Compose estiver ligado, acesse <http://localhost:8080>.
 
-Para executar o Flutter Web fora do Compose, o cliente usa `http://localhost:8000/api` por padrão. Em emulador Android, usa `http://10.0.2.2:8000/api`. Para outra URL, defina `API_BASE_URL` com `--dart-define` ao iniciar ou compilar o Flutter.
+## Rodar o Flutter localmente com a API no Docker
 
-Na API, instale as dependências com Composer, configure um `.env` do Laravel para um MySQL disponível, gere `APP_KEY`, execute as migrations e os seeders, e inicie o servidor com `php artisan serve`. A documentação Scramble fica disponível no ambiente `local`.
+Este modo deixa banco e API no Docker e executa o Flutter no computador. Na primeira vez, conclua antes a configuração do `.env.docker` e gere a chave `APP_KEY` conforme os passos da seção anterior. Depois, na raiz do repositório, inicie banco e API e prepare o banco:
+
+```powershell
+docker compose --env-file .env.docker up -d --build db api
+docker compose --env-file .env.docker exec api php artisan migrate --seed --force
+```
+
+Em outro terminal PowerShell, instale as dependências Flutter e inicie no Chrome:
+
+```powershell
+Set-Location .\helpdesk_app
+flutter pub get
+flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:8000/api
+```
+
+Para descobrir os dispositivos disponíveis, use `flutter devices`. O endereço `http://localhost:8000/api` funciona para Flutter Web no computador. Para o emulador Android, o app usa por padrão `http://10.0.2.2:8000/api`.
+
+Para instalar dependências da API e executar tudo fora do Docker, é necessário ter PHP, Composer e MySQL instalados. Na pasta `helpdesk-api`, execute `composer install`, copie `.env.example` para `.env`, configure as credenciais de um MySQL local e rode:
+
+```powershell
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve --host=0.0.0.0 --port=8000
+```
+
+Em outro terminal, rode os comandos Flutter da seção anterior. Nesse modo, a API deve estar acessível em `http://localhost:8000`.
+
+Para uma URL de API diferente, defina `API_BASE_URL` com `--dart-define` ao iniciar ou compilar o Flutter. A documentação Scramble fica disponível no ambiente `local`.
 
 ## Observação de segurança
 
