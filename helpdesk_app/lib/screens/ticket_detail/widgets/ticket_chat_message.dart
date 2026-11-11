@@ -4,7 +4,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../models/ticket_message_model.dart';
-import '../../../../services/api_config.dart';
+import '../../../../widgets/authenticated_media.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 import 'package:helpdesk_app/core/theme/app_spacing.dart';
@@ -73,7 +73,7 @@ class TicketChatMessage extends StatelessWidget {
   }
 
   Widget _buildAttachment(String rawUrl) {
-    final url = ApiConfig.resolveMediaUrl(rawUrl);
+    final url = AuthenticatedMedia.resolveUrl(rawUrl);
     final uri = Uri.tryParse(url);
     final fileName = uri != null && uri.pathSegments.isNotEmpty
         ? uri.pathSegments.last
@@ -100,6 +100,7 @@ class TicketChatMessage extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: Image.network(
         url,
+        headers: AuthenticatedMedia.headers,
         width: double.infinity,
         height: AppSpacing.attachmentPreviewHeight,
         fit: BoxFit.contain,

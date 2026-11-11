@@ -31,3 +31,7 @@ docker compose --env-file .env.docker down
 `down` preserva o banco e os anexos nos volumes. Para apagar também esses dados de teste, use `docker compose --env-file .env.docker down -v`.
 
 Este compose é para rodar localmente. Antes de publicar na internet, troque as senhas de desenvolvimento, configure HTTPS e defina `APP_DEBUG=false`.
+
+## Documentação da API
+
+A página interativa das rotas fica em **http://localhost:8080/docs/api**. Para executar uma rota protegida, chame `POST /api/login`, copie `access_token` e use a autorização Bearer na página. A especificação OpenAPI em JSON fica em **http://localhost:8080/docs/api.json**.

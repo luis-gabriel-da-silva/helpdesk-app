@@ -2,12 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User; // <-- ADICIONE ESTA LINHA!
+use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    public function __construct(private readonly UserService $users) {}
+
+    public function register(RegisterRequest $request)
+    {
+        $user = $this->users->createCustomer($request->validated());
+
+        return $this->createTokenResponse($user, 201);
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -15,28 +28,36 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = $this->users->findByEmail($request->email);
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Credenciais inválidas.'
+                'message' => 'Credenciais invalidas.',
             ], 401);
         }
 
+        return $this->createTokenResponse($user);
+    }
+
+    public function logout(Request $request)
+    {
+        $token = $request->user()->currentAccessToken();
+
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
+
+        return response()->noContent();
+    }
+
+    private function createTokenResponse(User $user, int $status = 200)
+    {
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role ?? 'cliente',
-                'position' => $user->position ?? 'Não especificado',
-                'department' => $user->department ?? 'Geral',
-                'avatar_url' => $user->avatar_path ? url('/api/attachments/'.$user->avatar_path) : null,
-            ]
-        ]);
+            'user' => UserResource::make($user)->resolve(),
+        ], $status);
     }
 }

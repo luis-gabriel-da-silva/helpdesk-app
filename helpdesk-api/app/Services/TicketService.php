@@ -2,16 +2,21 @@
 
 namespace App\Services;
 
+use App\Models\Ticket;
 use App\Models\User;
-use App\Models\UserNotification;
 use App\Repositories\Contracts\TicketRepositoryInterface;
-use Illuminate\Support\Facades\Storage;
+use App\Repositories\Contracts\UserRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TicketService extends BaseService
 {
-    public function __construct(TicketRepositoryInterface $repository)
-    {
+    public function __construct(
+        TicketRepositoryInterface $repository,
+        private readonly UserRepositoryInterface $users,
+        private readonly UserNotificationService $notifications,
+    ) {
         parent::__construct($repository);
     }
 
@@ -24,6 +29,17 @@ class TicketService extends BaseService
         }
 
         return $this->repository->getByUser($user->id, $relations);
+    }
+
+    public function getTicketForUser(User $user, int $ticketId, array $relations = []): Ticket
+    {
+        $ticket = $this->getById($ticketId, $relations);
+
+        if ($user->role !== 'tecnico' && $ticket->user_id !== $user->id) {
+            throw new AuthorizationException('Sem permissao para visualizar este chamado.');
+        }
+
+        return $ticket;
     }
 
     public function createTicket(User $user, array $data)
@@ -47,8 +63,8 @@ class TicketService extends BaseService
             'attachment_path' => $attachmentPath,
         ]);
 
-        User::where('role', 'tecnico')->where('id', '!=', $user->id)->get()->each(function (User $technician) use ($ticket) {
-            UserNotification::create([
+        $this->users->techniciansExcept($user->id)->each(function (User $technician) use ($ticket, $user) {
+            $this->notifications->notify([
                 'user_id' => $technician->id,
                 'ticket_id' => $ticket->id,
                 'type' => 'new_ticket',
@@ -84,12 +100,12 @@ class TicketService extends BaseService
         } elseif ($ticket->technician_id) {
             $recipients = collect([$ticket->technician]);
         } else {
-            $recipients = User::where('role', 'tecnico')->get();
+            $recipients = $this->users->techniciansExcept($user->id);
         }
 
         $recipients->filter()->unique('id')->reject(fn (User $recipient) => $recipient->id === $user->id)
             ->each(function (User $recipient) use ($ticket, $user) {
-                UserNotification::create([
+                $this->notifications->notify([
                     'user_id' => $recipient->id,
                     'ticket_id' => $ticket->id,
                     'type' => 'new_message',

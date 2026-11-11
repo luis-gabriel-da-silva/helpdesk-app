@@ -6,6 +6,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../widgets/authenticated_media.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   final String name;
@@ -43,7 +44,9 @@ class ProfileHeaderCard extends StatelessWidget {
                   alpha: AppColors.opacity14,
                 ),
                 backgroundImage: photoBytes == null
-                    ? (photoUrl == null ? null : NetworkImage(photoUrl!))
+                    ? (photoUrl == null
+                          ? null
+                          : AuthenticatedMedia.imageProvider(photoUrl!))
                     : MemoryImage(photoBytes!),
                 child: photoBytes == null && photoUrl == null
                     ? Text(

@@ -3,6 +3,18 @@ import 'package:flutter/foundation.dart';
 const _configuredWebApiBaseUrl = String.fromEnvironment('API_BASE_URL');
 
 class ApiConfig {
+  static String? _activeToken;
+
+  static void setActiveToken(String? token) {
+    _activeToken = token;
+  }
+
+  static Map<String, String> get mediaHeaders => {
+    'Accept': 'application/json',
+    if (_activeToken != null && _activeToken!.isNotEmpty)
+      'Authorization': 'Bearer $_activeToken',
+  };
+
   // Ajusta automaticamente o IP dependendo da plataforma
   static String get baseUrl {
     if (kIsWeb) {

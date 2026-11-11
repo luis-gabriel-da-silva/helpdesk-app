@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../models/user_model.dart';
 import '../../../../widgets/helpdesk_logo.dart';
-import '../../../../services/api_config.dart';
+import '../../../../widgets/authenticated_media.dart';
 import '../../../core/constants/app_strings.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
@@ -96,7 +96,7 @@ class HomeHeader extends StatelessWidget {
                 ),
                 backgroundImage: user?.avatarUrl == null
                     ? null
-                    : NetworkImage(ApiConfig.resolveMediaUrl(user!.avatarUrl!)),
+                    : AuthenticatedMedia.imageProvider(user!.avatarUrl!),
                 child: user?.avatarUrl != null
                     ? null
                     : Text(

@@ -5,6 +5,12 @@ import 'app_spacing.dart';
 import 'app_text_styles.dart';
 
 abstract class AppTheme {
+  static const LinearGradient welcomeCardGradient = LinearGradient(
+    colors: [AppColors.surface, AppColors.surfaceTint],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   static const RadialGradient cloudyBackgroundGradient = RadialGradient(
     center: Alignment(0.0, -0.4),
     radius: 1.4,

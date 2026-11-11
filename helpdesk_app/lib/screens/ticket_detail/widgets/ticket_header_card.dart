@@ -5,7 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../models/ticket_model.dart';
-import '../../../../services/api_config.dart';
+import '../../../../widgets/authenticated_media.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
@@ -108,9 +108,7 @@ class TicketHeaderCard extends StatelessWidget {
                 ),
                 backgroundImage: ticket.user?.avatarUrl == null
                     ? null
-                    : NetworkImage(
-                        ApiConfig.resolveMediaUrl(ticket.user!.avatarUrl!),
-                      ),
+                    : AuthenticatedMedia.imageProvider(ticket.user!.avatarUrl!),
                 child: ticket.user?.avatarUrl != null
                     ? null
                     : Text(

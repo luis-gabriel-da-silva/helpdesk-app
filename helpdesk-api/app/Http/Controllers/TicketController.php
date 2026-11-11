@@ -34,7 +34,11 @@ class TicketController extends Controller
 
     public function show(Request $request, int $id)
     {
-        $ticket = $this->ticketService->getById($id, ['user', 'technician', 'messages.user']);
+        $ticket = $this->ticketService->getTicketForUser(
+            $request->user(),
+            $id,
+            ['user', 'technician', 'messages.user'],
+        );
 
         if ($request->user()->role === 'tecnico' && $ticket->technician_seen_at === null) {
             $ticket->forceFill(['technician_seen_at' => now()])->save();

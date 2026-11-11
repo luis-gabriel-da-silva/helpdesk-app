@@ -16,11 +16,14 @@ class AuthService {
   /// Guarda o token JWT/Sanctum de forma segura
   Future<void> saveToken(String token) async {
     await _storage.write(key: _tokenKey, value: token);
+    ApiConfig.setActiveToken(token);
   }
 
   /// Recupera o token guardado
   Future<String?> getToken() async {
-    return await _storage.read(key: _tokenKey);
+    final token = await _storage.read(key: _tokenKey);
+    ApiConfig.setActiveToken(token);
+    return token;
   }
 
   /// Guarda os dados do utilizador localmente
@@ -153,6 +156,7 @@ class AuthService {
 
     await _storage.delete(key: _tokenKey);
     await _storage.delete(key: _userKey);
+    ApiConfig.setActiveToken(null);
   }
 
   /// Verifica se existe uma sessão ativa

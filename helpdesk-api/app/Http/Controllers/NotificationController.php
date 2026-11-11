@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserNotification;
+use App\Services\UserNotificationService;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
+    public function __construct(private readonly UserNotificationService $notifications) {}
+
     public function index(Request $request)
     {
         $user = $request->user();
-        $notifications = UserNotification::where('user_id', $user->id)
-            ->with(['ticket:id,title,category,user_id', 'ticket.user:id,name'])
-            ->latest()
-            ->limit(50)
-            ->get();
+        $notifications = $this->notifications->listForUser($user->id);
 
         return response()->json([
             'data' => $notifications->map(fn (UserNotification $notification) => [
@@ -32,14 +30,13 @@ class NotificationController extends Controller
                 'read_at' => $notification->read_at?->toIso8601String(),
                 'created_at' => $notification->created_at->toIso8601String(),
             ]),
-            'unread_count' => UserNotification::where('user_id', $user->id)->whereNull('read_at')->count(),
+            'unread_count' => $this->notifications->unreadCountForUser($user->id),
         ]);
     }
 
     public function markRead(Request $request, int $id)
     {
-        $notification = UserNotification::where('user_id', $request->user()->id)->findOrFail($id);
-        $notification->update(['read_at' => now()]);
+        $this->notifications->markRead($request->user()->id, $id);
 
         return response()->noContent();
     }
