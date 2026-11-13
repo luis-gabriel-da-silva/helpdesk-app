@@ -118,19 +118,19 @@ As rotas nomeadas correspondentes ficam em `helpdesk_app/lib/core/routes/app_rou
 <img src="docs/screenshots/login.png" width="320" alt="Página de login">
 
 #### Dashboard do Cliente
-<img src="docs/screenshots/dashboard-cliente.png" width="320" alt="Dashboard do cliente">
+<img src="docs/screenshots/dashboard-cliente.png" width="400" alt="Dashboard do cliente">
 
 #### Dashboard do Técnico
-<img src="docs/screenshots/dashboard-tecnico.png" width="320" alt="Dashboard do técnico">
+<img src="docs/screenshots/dashboard-tecnico.png" width="400" alt="Dashboard do técnico">
 
 #### Novo Chamado
-<img src="docs/screenshots/novo-chamado.png" width="320" alt="Novo chamado">
+<img src="docs/screenshots/novo-chamado.png" width="400" alt="Novo chamado">
 
 #### Detalhes do Chamado
-<img src="docs/screenshots/detalhes-chamado.png" width="320" alt="Detalhes do chamado">
+<img src="docs/screenshots/detalhes-chamado.png" width="400" alt="Detalhes do chamado">
 
 #### Página do Perfil
-<img src="docs/screenshots/perfil.png" width="320" alt="Página do perfil">
+<img src="docs/screenshots/perfil.png" width="400" alt="Página do perfil">
 
 
 ### Principais entidades

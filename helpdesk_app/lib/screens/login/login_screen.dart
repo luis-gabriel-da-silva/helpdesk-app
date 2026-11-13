@@ -5,7 +5,6 @@ import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/helpdesk_logo.dart';
@@ -72,9 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         // Fundo com gradiente suave (Efeito nublado/iluminado roxo e branco)
-        decoration: const BoxDecoration(
-          gradient: AppTheme.loginBackgroundGradient,
-        ),
+        decoration: const BoxDecoration(color: AppColors.background),
         child: SafeArea(
           child: Stack(
             children: [

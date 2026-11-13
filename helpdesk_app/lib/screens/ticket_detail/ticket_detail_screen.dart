@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_theme.dart';
 import '../../models/ticket_message_model.dart';
 import '../../models/ticket_model.dart';
 import '../../services/auth_service.dart';
@@ -245,9 +244,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
         elevation: AppSpacing.zero,
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.cloudyBackgroundGradient,
-        ),
+        decoration: const BoxDecoration(color: AppColors.background),
         child: SafeArea(
           child: Align(
             alignment: Alignment.topCenter,

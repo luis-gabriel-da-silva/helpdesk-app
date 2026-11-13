@@ -5,34 +5,6 @@ import 'app_spacing.dart';
 import 'app_text_styles.dart';
 
 abstract class AppTheme {
-  static const LinearGradient welcomeCardGradient = LinearGradient(
-    colors: [AppColors.surface, AppColors.surfaceTint],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const RadialGradient cloudyBackgroundGradient = RadialGradient(
-    center: Alignment(0.0, -0.4),
-    radius: 1.4,
-    colors: [
-      AppColors.surface,
-      AppColors.backgroundGradientMid,
-      AppColors.backgroundGradientEnd,
-    ],
-    stops: [0.2, 0.65, 1.0],
-  );
-
-  static const RadialGradient loginBackgroundGradient = RadialGradient(
-    center: Alignment(0.0, -0.2),
-    radius: 1.3,
-    colors: [
-      AppColors.surface,
-      AppColors.loginGradientMid,
-      AppColors.loginGradientEnd,
-    ],
-    stops: [0.2, 0.65, 1.0],
-  );
-
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,

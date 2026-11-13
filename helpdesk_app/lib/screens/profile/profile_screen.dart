@@ -8,7 +8,6 @@ import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_theme.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/helpdesk_logo.dart';
@@ -210,9 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.cloudyBackgroundGradient,
-        ),
+        decoration: const BoxDecoration(color: AppColors.background),
         child: SafeArea(
           top: false,
           child: ResponsiveContainer(

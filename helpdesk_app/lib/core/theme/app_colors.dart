@@ -22,16 +22,9 @@ abstract class AppColors {
   static const Color background = Color(0xFFF3F0F9); // Fundo pastel lavanda
   static const Color surface = Color(0xFFFFFFFF); // Cards em branco puro
   static const Color inputBackground = Color(0xFFF8F6FC); // Fundo dos campos
-  static const Color surfaceTint = Color(0xFFF8F5FF);
   static const Color surfaceMuted = Color(0xFFF0ECF7);
   static const Color transparent = Color(0x00000000);
   static const Color border = Color(0xFFE2E8F0);
-
-  // Fundos decorativos
-  static const Color backgroundGradientMid = Color(0xFFF6F2FC);
-  static const Color backgroundGradientEnd = Color(0xFFEDE6F8);
-  static const Color loginGradientMid = Color(0xFFF3EEFB);
-  static const Color loginGradientEnd = Color(0xFFE8DEF8);
 
   // Textos
   static const Color textPrimary = Color(0xFF2D2A32); // Grafite escuro
