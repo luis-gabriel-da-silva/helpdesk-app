@@ -115,7 +115,7 @@ class TicketService {
     request.fields['priority'] = priority;
     request.fields['description'] = description;
 
-    // Tratamento de anexo
+    // Na Web enviamos bytes; no celular, o caminho local do arquivo.
     if (kIsWeb && fileBytes != null) {
       request.files.add(
         http.MultipartFile.fromBytes(
@@ -188,6 +188,7 @@ class TicketService {
   }
 
   String _responseError(http.Response response, String fallback) {
+    // Converte erros da API (inclusive validações) em texto para a interface.
     try {
       final decoded = jsonDecode(response.body);
       if (decoded is Map<String, dynamic>) {

@@ -52,6 +52,7 @@ class AuthService {
     String? avatarPath,
     String? avatarName,
   }) async {
+    // O perfil e a foto seguem juntos em uma requisição multipart.
     final token = await getToken();
     final request = http.MultipartRequest(
       'POST',
@@ -116,6 +117,7 @@ class AuthService {
       final userData = data['user'] ?? data;
 
       if (token != null) {
+        // Persiste o token e atualiza o token usado pelos pedidos de mídia protegida.
         await saveToken(token.toString());
       }
 

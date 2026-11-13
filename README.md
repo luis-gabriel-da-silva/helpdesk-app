@@ -14,7 +14,7 @@ Os técnicos visualizam a fila de chamados, abrem os detalhes, respondem às men
 ### Funcionalidades
 
 - Login com token de acesso do Laravel Sanctum.
-- Cadastro pela API; novas contas recebem o perfil de cliente.
+- Cadastro público de clientes e cadastro de técnicos por técnico já autenticado.
 - Abertura, listagem, consulta, edição e exclusão de chamados.
 - Categorias: hardware, acesso/login, banco de dados/infraestrutura e financeiro.
 - Prioridades: baixa, média e alta.
@@ -152,6 +152,7 @@ As rotas usam o prefixo `/api`. As rotas protegidas exigem um token Sanctum vál
 |---|---|---|---|
 | `POST` | `/api/register` | Público | Cria um cliente; exige `name`, `email`, `password` e `password_confirmation`. |
 | `POST` | `/api/login` | Público | Valida e-mail e senha e retorna `access_token` e dados do usuário. |
+| `POST` | `/api/technicians` | Sanctum; somente técnico | Cadastra outro técnico; exige os dados de conta e confirmação de senha. O papel é definido pela API. |
 | `GET` | `/api/attachments/{path}` | Sanctum; dono do chamado ou técnico | Entrega um anexo ou avatar após validar a autorização. |
 | `POST` | `/api/logout` | Sanctum | Revoga o token usado na requisição. |
 | `GET` | `/api/users/{id}` | Sanctum; próprio usuário ou técnico | Retorna os dados do usuário indicado. |
@@ -165,6 +166,8 @@ As rotas usam o prefixo `/api`. As rotas protegidas exigem um token Sanctum vál
 | `PATCH` | `/api/tickets/{id}/status` | Sanctum; técnico | Atualiza o status e registra o técnico responsável. |
 | `GET` | `/api/notifications` | Sanctum | Lista notificações do usuário autenticado. |
 | `PATCH` | `/api/notifications/{id}/read` | Sanctum | Marca como lida uma notificação do usuário autenticado. |
+
+Para criar um técnico pela API, envie `name`, `email`, `password`, `password_confirmation` e, opcionalmente, `position` e `department` para `POST /api/technicians` com token Bearer de um técnico existente. A API fixa o papel como `tecnico`; não aceita papel escolhido pelo corpo da requisição. Em uma instalação nova, os técnicos iniciais são criados pelo `DatabaseSeeder`.
 
 As categorias aceitas pela API são `hardware`, `login`, `db_infra` e `financeiro`; prioridades são `baixa`, `media` e `alta`; status são `pendente`, `em_andamento` e `concluido`.
 

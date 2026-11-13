@@ -17,6 +17,7 @@ import '../../core/constants/app_strings.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
+// Reúne dados, histórico de mensagens e ações disponíveis para este chamado.
 class TicketDetailScreen extends StatefulWidget {
   final String ticketId;
 
@@ -52,6 +53,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   }
 
   Future<void> _loadTicketDetails() async {
+    // Busca a versão atual do chamado na API, incluindo mensagens e participantes.
     setState(() {
       _isLoading = true;
       _loadError = null;
@@ -170,6 +172,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   }
 
   Future<void> _sendMessage() async {
+    // Envia a resposta e, se houver, o anexo selecionado para a conversa.
     if (_messageController.text.trim().isEmpty || _ticket == null) return;
 
     final content = _messageController.text.trim();

@@ -9,6 +9,7 @@ import 'screens/profile/profile_screen.dart';
 import 'screens/ticket_detail/ticket_detail_screen.dart';
 import 'screens/ticket_form/ticket_form_screen.dart';
 
+// Liga cada rota à tela correspondente; os caminhos ficam no core/routes.
 final _appRouter = AppRouter.create(
   loginBuilder: () => const LoginScreen(),
   homeBuilder: () => const HomeScreen(),
@@ -23,6 +24,7 @@ class HelpDeskApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // MaterialApp.router usa o GoRouter e aplica o tema central do app.
     return MaterialApp.router(
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,

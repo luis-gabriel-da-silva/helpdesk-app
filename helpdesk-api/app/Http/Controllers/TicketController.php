@@ -22,12 +22,14 @@ class TicketController extends Controller
 
     public function index(Request $request)
     {
+        // O serviço filtra: técnicos veem a fila e clientes apenas os próprios chamados.
         $tickets = $this->ticketService->listTicketsForUser($request->user());
         return TicketResource::collection($tickets);
     }
 
     public function store(StoreTicketRequest $request)
     {
+        // Os dados chegam validados pelo Form Request antes da regra de negócio.
         $ticket = $this->ticketService->createTicket($request->user(), $request->all());
         return new TicketResource($ticket->load(['user', 'technician', 'messages.user']));
     }
@@ -77,6 +79,7 @@ class TicketController extends Controller
 
     public function updateStatus(Request $request, int $id)
     {
+        // Valida os valores aceitos; o serviço também exige papel técnico.
         $request->validate(['status' => 'required|in:pendente,em_andamento,concluido']);
 
         try {

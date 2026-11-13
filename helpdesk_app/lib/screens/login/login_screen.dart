@@ -211,39 +211,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: AppSpacing.lg),
 
-                                // Header Senha + Link Esqueci minha senha
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      AppStrings.passwordLabel,
-                                      style: AppTextStyles.custom(
-                                        fontSize: AppTextStyles.fontSize14,
-                                        fontWeight: AppTextStyles.semiBold,
-                                        color: AppColors.textPrimary,
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(AppStrings.needHelp),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        AppStrings.forgotPassword,
-                                        style: AppTextStyles.custom(
-                                          fontSize: AppTextStyles.fontSize13,
-                                          fontWeight: AppTextStyles.semiBold,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  AppStrings.passwordLabel,
+                                  style: AppTextStyles.custom(
+                                    fontSize: AppTextStyles.fontSize14,
+                                    fontWeight: AppTextStyles.semiBold,
+                                    color: AppColors.textPrimary,
+                                  ),
                                 ),
                                 const SizedBox(height: AppSpacing.sm),
                                 TextFormField(

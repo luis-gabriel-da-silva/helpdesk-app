@@ -14,6 +14,7 @@ abstract class AppRouter {
     required IdScreenBuilder ticketEditBuilder,
     required IdScreenBuilder profileBuilder,
   }) {
+    // Rotas com :id recebem o parâmetro do endereço e o encaminham à tela.
     return GoRouter(
       initialLocation: AppRoutes.loginPath,
       routes: [

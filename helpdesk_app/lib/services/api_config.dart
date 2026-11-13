@@ -28,6 +28,7 @@ class ApiConfig {
   }
 
   static String resolveMediaUrl(String url) {
+    // Corrige links locais de mídia para apontar ao host acessível pelo app.
     final mediaUri = Uri.tryParse(url);
     if (mediaUri == null) return url;
 

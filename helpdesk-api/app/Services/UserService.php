@@ -23,6 +23,12 @@ class UserService extends BaseService
         return $this->users->create([...$data, 'role' => 'cliente']);
     }
 
+    public function createTechnician(array $data): User
+    {
+        // O papel vem do servidor, nunca do corpo enviado pelo cliente.
+        return $this->users->create([...$data, 'role' => 'tecnico']);
+    }
+
     public function findByEmail(string $email): ?User
     {
         return $this->users->findByEmail($email);

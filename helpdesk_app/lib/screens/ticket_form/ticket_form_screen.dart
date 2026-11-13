@@ -17,6 +17,7 @@ import '../../core/constants/app_strings.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
+// Um formulário atende tanto à criação quanto à edição; ticketId indica o modo de edição.
 class TicketFormScreen extends StatefulWidget {
   final String? ticketId;
 
@@ -60,6 +61,7 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   }
 
   Future<void> _loadTicketForEditing() async {
+    // No modo edição, preenche os campos com o chamado existente.
     setState(() => _isLoadingTicket = true);
     try {
       final ticket = await _ticketService.getTicketById(
@@ -121,6 +123,7 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
   }
 
   Future<void> _handleSubmit() async {
+    // Valida o formulário e escolhe criar ou atualizar conforme a presença de ticketId.
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);

@@ -22,6 +22,7 @@ class TicketService extends BaseService
 
     public function listTicketsForUser(User $user)
     {
+        // A filtragem acontece no backend; a interface não decide quais registros pode exibir.
         $relations = ['user', 'technician'];
 
         if ($user->role === 'tecnico') {
@@ -44,6 +45,7 @@ class TicketService extends BaseService
 
     public function createTicket(User $user, array $data)
     {
+        // A descrição inicial vira a primeira mensagem para manter um histórico único.
         $ticket = $this->create([
             'title' => $data['title'],
             'category' => $data['category'],
@@ -78,6 +80,7 @@ class TicketService extends BaseService
 
     public function addMessage(User $user, int $ticketId, array $data)
     {
+        // Verifica acesso, salva mensagem/anexo e notifica a outra parte da conversa.
         $ticket = $this->getById($ticketId);
 
         if ($user->role !== 'tecnico' && $ticket->user_id !== $user->id) {
@@ -119,6 +122,7 @@ class TicketService extends BaseService
 
     public function updateStatus(User $user, int $ticketId, string $status)
     {
+        // Além do status, associa o técnico que realizou a alteração.
         if ($user->role !== 'tecnico') {
             throw new \Exception('Apenas técnicos podem alterar o status.', 403);
         }
@@ -139,6 +143,7 @@ class TicketService extends BaseService
             throw new \Exception('Chamados concluídos não podem ser editados.', 422);
         }
 
+        // A transação mantém os dados do chamado e sua descrição inicial sincronizados.
         return DB::transaction(function () use ($ticket, $data) {
             $ticket->update(collect($data)->only(['title', 'category', 'priority'])->all());
 

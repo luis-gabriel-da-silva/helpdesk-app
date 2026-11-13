@@ -24,6 +24,7 @@ import 'widgets/home_welcome_card.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
 
+// Painel principal: carrega chamados/notificações e muda as ações conforme o papel do usuário.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -63,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData({bool showLoading = true}) async {
+    // Busca os dados no backend; showLoading evita piscar a tela em atualizações silenciosas.
     if (showLoading) setState(() => _isLoading = true);
     try {
       final user = await _authService.getSavedUser();
