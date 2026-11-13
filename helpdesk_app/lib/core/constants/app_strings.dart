@@ -7,7 +7,6 @@ abstract class AppStrings {
   static const String emailLabel = 'Usuário / E-mail';
   static const String passwordLabel = 'Senha';
   static const String loginButton = 'Entrar';
-  static const String loginPortal = 'Portal do Usuário';
   static const String emailHint = 'nome@empresa.com ou usuário';
   static const String passwordHint = 'Digite sua senha de acesso';
   static const String rememberDevice = 'Lembrar este dispositivo por 30 dias';

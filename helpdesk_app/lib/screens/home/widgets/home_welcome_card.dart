@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../models/user_model.dart';
 
 import 'package:helpdesk_app/core/theme/app_text_styles.dart';
@@ -26,6 +27,7 @@ class HomeWelcomeCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
+        gradient: AppTheme.welcomeCardGradient,
         borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
         border: Border.all(
           color: AppColors.primary.withValues(alpha: AppColors.opacity18),

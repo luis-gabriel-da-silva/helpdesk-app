@@ -7,6 +7,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
 import '../../models/ticket_model.dart';
 import '../../models/user_model.dart';
@@ -348,7 +349,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Container(
         // Fundo com gradiente radial estilo 'nublado'
-        decoration: const BoxDecoration(color: AppColors.background),
+        decoration: const BoxDecoration(
+          gradient: AppTheme.cloudyBackgroundGradient,
+        ),
         child: SafeArea(
           child: Align(
             alignment: Alignment.topCenter,

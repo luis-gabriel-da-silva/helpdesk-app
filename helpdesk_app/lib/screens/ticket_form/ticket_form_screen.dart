@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../services/ticket_service.dart';
 import '../../widgets/responsive_container.dart';
@@ -243,7 +244,9 @@ class _TicketFormScreenState extends State<TicketFormScreen> {
         backgroundColor: AppColors.transparent,
       ),
       body: Container(
-        decoration: const BoxDecoration(color: AppColors.background),
+        decoration: const BoxDecoration(
+          gradient: AppTheme.cloudyBackgroundGradient,
+        ),
         child: SafeArea(
           top: false,
           child: ResponsiveContainer(

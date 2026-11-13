@@ -5,6 +5,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/helpdesk_logo.dart';
@@ -71,7 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         // Fundo com gradiente suave (Efeito nublado/iluminado roxo e branco)
-        decoration: const BoxDecoration(color: AppColors.background),
+        decoration: const BoxDecoration(
+          gradient: AppTheme.loginBackgroundGradient,
+        ),
         child: SafeArea(
           child: Stack(
             children: [
@@ -131,45 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Tag AppStrings.loginPortal
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.space14,
-                                    vertical: AppSpacing.space6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(
-                                      alpha: AppColors.opacity10,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      AppSpacing.radiusXl,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        width: AppSpacing.sm,
-                                        height: AppSpacing.sm,
-                                        decoration: const BoxDecoration(
-                                          color: AppColors.primary,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Text(
-                                        AppStrings.loginPortal,
-                                        style: AppTextStyles.custom(
-                                          color: AppColors.primary,
-                                          fontSize: AppTextStyles.fontSize13,
-                                          fontWeight: AppTextStyles.semiBold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.lg),
-
                                 // Título
                                 Text(
                                   AppStrings.loginTitle,
